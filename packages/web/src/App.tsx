@@ -24,6 +24,7 @@ import {
   PiNotebook,
   PiGraph,
   PiMagnifyingGlass,
+  PiBookOpenText,
 } from 'react-icons/pi';
 import { Outlet } from 'react-router-dom';
 import Drawer, { ItemProps } from './components/Drawer';
@@ -38,6 +39,7 @@ import useScreen from './hooks/useScreen';
 import { optimizePromptEnabled } from './hooks/useOptimizePrompt';
 import useUseCases from './hooks/useUseCases';
 import { useTranslation } from 'react-i18next';
+import { legalRagEnabled } from './features/legalRag/runtime';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
 const ragKnowledgeBaseEnabled: boolean =
@@ -152,6 +154,15 @@ const App: React.FC = () => {
           icon: <PiRobot />,
           display: 'usecase' as const,
           sub: 'Experimental',
+        }
+      : null,
+    legalRagEnabled
+      ? {
+          label: t('legal_rag.title'),
+          to: '/legal-rag',
+          icon: <PiBookOpenText />,
+          display: 'usecase' as const,
+          sub: 'AgentCore',
         }
       : null,
     agentBuilderEnabled

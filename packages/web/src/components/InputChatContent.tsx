@@ -43,6 +43,7 @@ type Props = {
   reasoning?: boolean;
   onReasoningSwitched?: () => void;
   reasoningEnabled?: boolean;
+  leadingAction?: React.ReactNode;
 } & (
   | {
       hideReset?: false;
@@ -210,6 +211,7 @@ const InputChatContent: React.FC<Props> = (props) => {
         </div>
         <div className="m-2 flex justify-between gap-1">
           <div className="flex gap-x-1">
+            {props.leadingAction}
             {props.fileUpload && (
               <Tooltip
                 message={t('inputs.attachment')}

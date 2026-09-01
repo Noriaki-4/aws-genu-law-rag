@@ -13,6 +13,22 @@
 GenU自身ではGeneric AgentCore Runtimeを新規作成せず、上記の外部Runtimeを呼び出す。Runtime側が
 OpenSearch Serverless、Neptune Analytics、S3、Bedrockとの接続と法令検索処理を担当する。
 
+## 法令RAG画面
+
+`/legal-rag`にStreamlit代替の専用画面を置く。ホームとサイドメニューの「法令RAG」から開き、
+利用者はRuntimeやモデルを選択せずに質問できる。画面は次を提供する。
+
+- 対応している法令・ガイドラインの範囲
+- 法令横断のLv.1〜3例題と、選択した例題の質問欄への反映
+- 検索前の質問整理と、確認候補から選んだ修正版の質問欄への反映
+- Cognito認証済み利用者から外部AgentCore Runtimeへのstreaming chat
+- 回答本文に投影された根拠資料と、Runtimeが送る調査状況のtrace表示
+- 会話のリセット
+
+画面コードへRuntime ARNを埋め込まない。`agentCoreExternalRuntimes`から`LocalRagLawPoc`を選び、
+環境に外部Runtimeが1件だけなら名称変更後もそのRuntimeを使用する。複数の外部Runtimeが存在し、
+`LocalRagLawPoc`がない場合は誤接続を避けるため法令RAG画面を有効化しない。
+
 ## version管理
 
 - GenU: `v5.5.0` / `a9e26efb3cb73c998a1385196dfcd93366683774`
@@ -38,9 +54,19 @@ npm run cdk:test
 AWSへdeployする前に`packages/cdk/cdk.json`と`packages/cdk/parameter.ts`の`law-rag-poc`設定が一致し、
 対象Runtime ARNが現行環境と一致することを確認する。
 
-## 未実装
+バックエンドやCognitoなしで画面だけを確認する場合は、次の開発専用モードを使う。
 
-現時点では公式AgentCore chat UIによる基本連携までを対象とする。Streamlitにある質問準備度、Lv1〜3の例題、
-検索詳細設定、raw citation、trace、Graph経路、例題評価の専用UIは別課題として段階的に実装する。
+```bash
+npm run web:preview:legal-rag
+```
+
+`http://127.0.0.1:5173/legal-rag`を開く。このモードの認証バイパスはViteの`DEV`ビルドでのみ有効で、
+production buildでは有効にならない。質問送信は実行せず、画面表示と入力操作の確認に使用する。
+
+## 残るStreamlit差分
+
+選択式問題、検索詳細設定、citation本文の個別展開、Graph経路の可視化、例題の自動評価は
+AgentCore wire contractに現在含まれないため未実装である。Runtimeが固定する検索・モデル設定を一般利用者へ
+公開するかを先に決め、必要な構造化結果だけをAgentCore adapterから返す。
 
 本システムは法務・RAGの検証用途であり、表示する回答によって法的判断を確定しない。

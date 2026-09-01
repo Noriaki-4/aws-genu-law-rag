@@ -1,0 +1,201 @@
+import React from 'react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import LegalRagPage from '../../src/pages/LegalRagPage';
+
+const mocks = vi.hoisted(() => ({
+  invokeAgentRuntime: vi.fn(),
+  clear: vi.fn(),
+  setModelId: vi.fn(),
+  setFollowing: vi.fn(),
+  requestQuestionReadiness: vi.fn(),
+}));
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, values?: { level?: number }) =>
+      values?.level === undefined ? key : `${key}:${values.level}`,
+  }),
+}));
+
+vi.mock('../../src/hooks/useAgentCore', () => ({
+  useAgentCore: () => ({
+    messages: [],
+    isEmpty: true,
+    clear: mocks.clear,
+    loading: false,
+    invokeAgentRuntime: mocks.invokeAgentRuntime,
+    getExternalRuntimes: () => [
+      {
+        name: 'LocalRagLawPoc',
+        description: 'Legal RAG runtime',
+        arn: 'arn:aws:bedrock-agentcore:ap-northeast-1:123456789012:runtime/law',
+      },
+    ],
+    getModelId: () => 'test-model',
+    setModelId: mocks.setModelId,
+  }),
+}));
+
+vi.mock('../../src/hooks/useFollow', () => ({
+  default: () => ({
+    scrollableContainer: { current: null },
+    setFollowing: mocks.setFollowing,
+  }),
+}));
+
+vi.mock('../../src/hooks/useModel', () => ({
+  MODELS: { modelIds: ['test-model'] },
+  findModelByModelId: () => ({
+    type: 'bedrock',
+    modelId: 'test-model',
+    region: 'ap-northeast-1',
+  }),
+}));
+
+vi.mock('../../src/features/legalRag/questionReadiness', () => ({
+  requestQuestionReadiness: mocks.requestQuestionReadiness,
+}));
+
+type InputProps = {
+  content: string;
+  leadingAction?: React.ReactNode;
+  onChangeContent: (content: string) => void;
+  onSend: () => void;
+  onReset: () => void;
+};
+
+const QUESTION_LABEL = 'question';
+const SEND_LABEL = 'send';
+const RESET_LABEL = 'reset';
+
+vi.mock('../../src/components/InputChatContent', () => ({
+  default: ({
+    content,
+    leadingAction,
+    onChangeContent,
+    onSend,
+    onReset,
+  }: InputProps) => (
+    <div data-testid="question-composer">
+      <textarea
+        aria-label={QUESTION_LABEL}
+        value={content}
+        onChange={(event) => onChangeContent(event.target.value)}
+      />
+      <button type="button" onClick={onSend}>
+        {SEND_LABEL}
+      </button>
+      <button type="button" onClick={onReset}>
+        {RESET_LABEL}
+      </button>
+      {leadingAction}
+    </div>
+  ),
+}));
+
+vi.mock('../../src/components/ScrollTopBottom', () => ({
+  default: () => null,
+}));
+
+describe('LegalRagPage', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test('shows the supported scope and fills an example question', () => {
+    render(
+      <MemoryRouter initialEntries={['/legal-rag']}>
+        <LegalRagPage />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('legal_rag.title')).toBeTruthy();
+    expect(screen.getByText('legal_rag.scope.title')).toBeTruthy();
+    expect(
+      screen
+        .getByText('legal_rag.readiness.organize')
+        .closest('[data-testid="question-composer"]')
+    ).not.toBeNull();
+    expect(screen.queryByText('legal_rag.examples.level_4.title')).toBeNull();
+
+    const exampleButton = screen
+      .getByText('legal_rag.examples.level_3.title')
+      .closest('button');
+    expect(exampleButton).not.toBeNull();
+    fireEvent.click(exampleButton as HTMLButtonElement);
+
+    expect(
+      (screen.getByLabelText('question') as HTMLTextAreaElement).value
+    ).toBe('legal_rag.examples.level_3.question');
+  });
+
+  test('invokes the configured external runtime without a runtime selector', () => {
+    render(
+      <MemoryRouter initialEntries={['/legal-rag']}>
+        <LegalRagPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByLabelText('question'), {
+      target: { value: 'Check the applicable provisions.' },
+    });
+    fireEvent.click(screen.getByText('send'));
+
+    expect(mocks.invokeAgentRuntime).toHaveBeenCalledWith(
+      'arn:aws:bedrock-agentcore:ap-northeast-1:123456789012:runtime/law',
+      expect.any(String),
+      'Check the applicable provisions.'
+    );
+  });
+
+  test('applies a refined question selected by question readiness', async () => {
+    mocks.requestQuestionReadiness.mockResolvedValue({
+      decision: 'clarification_required',
+      reason: 'The actor changes the applicable search path.',
+      clarificationQuestion: 'Who performs the action?',
+      choices: [
+        {
+          choiceId: 'company',
+          label: 'Company',
+          refinedQuestion: 'What requirements apply when a company acts?',
+        },
+        {
+          choiceId: 'person',
+          label: 'Individual',
+          refinedQuestion: 'What requirements apply when an individual acts?',
+        },
+      ],
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/legal-rag']}>
+        <LegalRagPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByLabelText('question'), {
+      target: { value: 'Who must comply?' },
+    });
+    fireEvent.click(screen.getByText('legal_rag.readiness.organize'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Who performs the action?')).toBeTruthy();
+    });
+    expect(mocks.requestQuestionReadiness).toHaveBeenCalledWith(
+      expect.objectContaining({
+        question: 'Who must comply?',
+        agentRuntimeArn:
+          'arn:aws:bedrock-agentcore:ap-northeast-1:123456789012:runtime/law',
+      })
+    );
+
+    fireEvent.click(screen.getByText('Individual'));
+    fireEvent.click(screen.getByText('legal_rag.readiness.apply'));
+
+    expect(
+      (screen.getByLabelText('question') as HTMLTextAreaElement).value
+    ).toBe('What requirements apply when an individual acts?');
+  });
+});

@@ -838,6 +838,57 @@ language:
   th: Thai
   vi: Vietnamese
   zh: Chinese
+legal_rag:
+  description: Search across Japanese laws, subordinate regulations, and administrative guidance, and answer with supporting sources.
+  examples:
+    expected: Expected sources
+    expected_label: 'Expected sources:'
+    intro: Levels represent the number of legal and guidance layers needed for an answer. Select a card to fill the question box.
+    level: Level {{level}}
+    level_1:
+      expected: Civil Code and Act on Land and Building Leases
+      question: How do the permitted contract terms differ when land is leased to construct a building and when it is leased for a purpose such as material storage without constructing a building? Please cite the supporting provisions.
+      title: Different terms for leasing land
+    level_2:
+      expected: Pharmaceuticals and Medical Devices Act and enforcement regulations
+      question: What responsible officers, internal structure, and operating procedures must a pharmaceutical marketing authorization holder establish for legal compliance? Explain who is responsible for what and cite the supporting provisions.
+      title: Pharmaceutical company compliance structure
+    level_3:
+      expected: Financial Instruments and Exchange Act, enforcement order, and tender-offer ordinance
+      question: Identify the publication methods available for a tender-offer commencement notice. Distinguish the information required regardless of the selected method from the conditions specific to each method, and cite the supporting provisions.
+      title: Required content of a tender-offer commencement notice
+    title: Cross-document example questions
+  input_description: Responses can take up to approximately 10 minutes.
+  input_placeholder: Ask a question about the supported Japanese laws
+  readiness:
+    apply: Use this revised question
+    clarification_default: Please clarify your question.
+    edit_instruction: Add the missing details to the question box, then select "Refine question" again.
+    error: Failed to refine the question
+    organize: Refine question
+    ready: The question is ready. Send it to start the research.
+    refined_question: Revised question if selected
+  runtime_not_configured: The AgentCore Runtime for Legal RAG is not configured. Contact your administrator.
+  scope:
+    field: Area
+    intro: Questions are limited to the loaded laws and guidance. Out-of-scope questions may have no citations or lower-confidence answers.
+    notes: Notes
+    rows:
+      finance:
+        field: Financial instruments
+        notes: All provisions in the loaded materials are covered.
+        sources: Financial Instruments and Exchange Act, enforcement order, related ordinances, and supervisory, disclosure, and tender-offer guidance
+      lease:
+        field: Land and building leases
+        notes: The Civil Code scope is limited to Articles 601 through 622-2.
+        sources: Act on Land and Building Leases and Civil Code lease provisions
+      pharma:
+        field: Pharmaceuticals and medical devices
+        notes: All provisions in the loaded materials are covered.
+        sources: Pharmaceuticals and Medical Devices Act, enforcement regulations, compliance Q&A, and advertising standards
+    sources: Supported laws and materials
+    title: Supported scope
+  title: Legal RAG
 mcp_chat:
   loading_message: Connecting to MCP server. This may take some time. Please wait...
   title: MCP Chat

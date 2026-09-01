@@ -33,6 +33,7 @@ import VoiceChatPage from './pages/VoiceChatPage';
 import McpChatPage from './pages/McpChatPage';
 import AgentCorePage from './pages/AgentCorePage.tsx';
 import AgentCoreListPage from './pages/AgentCoreListPage.tsx';
+import LegalRagPage from './pages/LegalRagPage.tsx';
 import ResearchAgentPage from './pages/ResearchAgentPage.tsx';
 import AgentBuilderListPage from './pages/agentBuilder/AgentBuilderListPage.tsx';
 import AgentBuilderEditPage from './pages/agentBuilder/AgentBuilderEditPage';
@@ -50,6 +51,7 @@ import GenerateDiagramPage from './pages/GenerateDiagramPage.tsx';
 import WriterPage from './pages/WriterPage.tsx';
 import useUseCases from './hooks/useUseCases';
 import { Toaster } from 'sonner';
+import { legalRagEnabled } from './features/legalRag/runtime';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
 const ragKnowledgeBaseEnabled: boolean =
@@ -64,6 +66,9 @@ const agentBuilderEnabled: boolean =
   import.meta.env.VITE_APP_AGENT_CORE_AGENT_BUILDER_ENABLED === 'true';
 const researchAgentEnabled: boolean =
   import.meta.env.VITE_APP_RESEARCH_AGENT_ENABLED === 'true';
+const legalRagLocalPreviewEnabled: boolean =
+  import.meta.env.DEV &&
+  import.meta.env.VITE_APP_LEGAL_RAG_LOCAL_PREVIEW === 'true';
 
 const {
   visionEnabled,
@@ -223,6 +228,12 @@ const routes: RouteObject[] = [
         element: <AgentCorePage />,
       }
     : null,
+  legalRagEnabled
+    ? {
+        path: '/legal-rag',
+        element: <LegalRagPage />,
+      }
+    : null,
   researchAgentEnabled
     ? {
         path: '/research',
@@ -293,7 +304,9 @@ const useCaseBuilderRoutes: RouteObject[] = [
 const router = createBrowserRouter([
   {
     path: '/',
-    element: samlAuthEnabled ? (
+    element: legalRagLocalPreviewEnabled ? (
+      <App />
+    ) : samlAuthEnabled ? (
       <AuthWithSAML>
         <App />
       </AuthWithSAML>

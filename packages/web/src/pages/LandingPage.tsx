@@ -21,6 +21,7 @@ import {
   PiMicrophoneBold,
   PiGraph,
   PiMagnifyingGlass,
+  PiBookOpenText,
 } from 'react-icons/pi';
 import AwsIcon from '../assets/aws.svg?react';
 import useInterUseCases from '../hooks/useInterUseCases';
@@ -44,6 +45,7 @@ import queryString from 'query-string';
 import { MODELS } from '../hooks/useModel';
 import useUseCases from '../hooks/useUseCases';
 import { useTranslation } from 'react-i18next';
+import { legalRagEnabled } from '../features/legalRag/runtime';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
 const ragKnowledgeBaseEnabled: boolean =
@@ -124,6 +126,10 @@ const LandingPage: React.FC = () => {
 
   const demoAgentCore = () => {
     navigate(`/agent-core`);
+  };
+
+  const demoLegalRag = () => {
+    navigate('/legal-rag');
   };
 
   const demoResearch = () => {
@@ -362,6 +368,15 @@ const LandingPage: React.FC = () => {
             onClickDemo={demoAgentCore}
             icon={<PiRobot />}
             description={t('landing.use_cases.agent_core.description')}
+          />
+        )}
+        {legalRagEnabled && (
+          <CardDemo
+            label={t('legal_rag.title')}
+            sub="AgentCore"
+            onClickDemo={demoLegalRag}
+            icon={<PiBookOpenText />}
+            description={t('legal_rag.description')}
           />
         )}
         {researchAgentEnabled && (
