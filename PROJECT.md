@@ -15,7 +15,7 @@ OpenSearch Serverless、Neptune Analytics、S3、Bedrockとの接続と法令検
 
 ## 法令RAG画面
 
-`/legal-rag`にStreamlit代替の専用画面を置く。ホームとサイドメニューの「法令RAG」から開き、
+`/legal-rag`にStreamlit代替の専用画面を置く。サイドメニューの「法令RAG」から開き、
 利用者はRuntimeやモデルを選択せずに質問できる。画面は次を提供する。
 
 - 対応している法令・ガイドラインの範囲

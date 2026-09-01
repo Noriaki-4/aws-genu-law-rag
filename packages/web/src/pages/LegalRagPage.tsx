@@ -13,12 +13,10 @@ import {
   PiBooks,
   PiCheckCircle,
   PiInfo,
-  PiSparkle,
   PiWarningCircle,
 } from 'react-icons/pi';
 import Button from '../components/Button';
 import ChatMessage from '../components/ChatMessage';
-import InputChatContent from '../components/InputChatContent';
 import ScrollTopBottom from '../components/ScrollTopBottom';
 import useFollow from '../hooks/useFollow';
 import { useAgentCore } from '../hooks/useAgentCore';
@@ -31,6 +29,7 @@ import {
 import QuestionLibraryDialog from '../features/legalRag/QuestionLibraryDialog';
 import { LEGAL_RAG_QUESTIONS } from '../features/legalRag/questionLibrary';
 import { installReadableStreamAsyncIterator } from '../features/legalRag/readableStreamAsyncIterator';
+import LegalRagInputChatContent from '../features/legalRag/LegalRagInputChatContent';
 
 const SCOPE_ROWS = ['lease', 'finance', 'pharma'] as const;
 
@@ -334,28 +333,19 @@ const LegalRagPage: React.FC = () => {
       />
 
       <div className="fixed bottom-0 z-10 flex w-full flex-col items-center justify-center bg-gradient-to-t from-white via-white pb-1 pt-4 lg:pr-64 print:hidden">
-        <InputChatContent
+        <LegalRagInputChatContent
           content={content}
           placeholder={t('legal_rag.input_placeholder')}
           description={t('legal_rag.input_description')}
-          disabled={!runtime || loading || readinessLoading}
+          disabled={!runtime || readinessLoading}
+          loading={loading}
           onChangeContent={onChangeContent}
-          resetDisabled={isEmpty}
           isEmpty={isEmpty}
           onSend={onSend}
           onReset={onReset}
-          fileUpload={false}
-          leadingAction={
-            <Button
-              outlined
-              className={`py-2 text-sm ${organizeDisabled ? '!opacity-60' : ''}`}
-              loading={readinessLoading}
-              disabled={organizeDisabled}
-              onClick={() => void onOrganizeQuestion()}>
-              <PiSparkle className="mr-2" />
-              {t('legal_rag.readiness.organize')}
-            </Button>
-          }
+          organizeDisabled={organizeDisabled}
+          organizeLoading={readinessLoading}
+          onOrganize={() => void onOrganizeQuestion()}
         />
       </div>
     </div>

@@ -63,23 +63,24 @@ vi.mock('../../src/features/legalRag/questionReadiness', () => ({
 
 type InputProps = {
   content: string;
-  leadingAction?: React.ReactNode;
   onChangeContent: (content: string) => void;
   onSend: () => void;
   onReset: () => void;
+  onOrganize: () => void;
 };
 
 const QUESTION_LABEL = 'question';
 const SEND_LABEL = 'send';
 const RESET_LABEL = 'reset';
+const ORGANIZE_LABEL = 'legal_rag.readiness.organize';
 
-vi.mock('../../src/components/InputChatContent', () => ({
+vi.mock('../../src/features/legalRag/LegalRagInputChatContent', () => ({
   default: ({
     content,
-    leadingAction,
     onChangeContent,
     onSend,
     onReset,
+    onOrganize,
   }: InputProps) => (
     <div data-testid="question-composer">
       <textarea
@@ -93,7 +94,9 @@ vi.mock('../../src/components/InputChatContent', () => ({
       <button type="button" onClick={onReset}>
         {RESET_LABEL}
       </button>
-      {leadingAction}
+      <button type="button" onClick={onOrganize}>
+        {ORGANIZE_LABEL}
+      </button>
     </div>
   ),
 }));
