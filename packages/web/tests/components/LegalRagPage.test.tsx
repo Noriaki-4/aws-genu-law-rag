@@ -14,8 +14,11 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string, values?: { level?: number }) =>
-      values?.level === undefined ? key : `${key}:${values.level}`,
+    t: (key: string, values?: { count?: number; level?: number }) => {
+      if (values?.level !== undefined) return `${key}:${values.level}`;
+      if (values?.count !== undefined) return `${key}:${values.count}`;
+      return key;
+    },
   }),
 }));
 
@@ -102,9 +105,17 @@ vi.mock('../../src/components/ScrollTopBottom', () => ({
 describe('LegalRagPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubGlobal(
+      'ResizeObserver',
+      vi.fn(() => ({
+        disconnect: vi.fn(),
+        observe: vi.fn(),
+        unobserve: vi.fn(),
+      }))
+    );
   });
 
-  test('shows the supported scope and fills an example question', () => {
+  test('opens the question library and fills a selected question', async () => {
     render(
       <MemoryRouter initialEntries={['/legal-rag']}>
         <LegalRagPage />
@@ -118,17 +129,18 @@ describe('LegalRagPage', () => {
         .getByText('legal_rag.readiness.organize')
         .closest('[data-testid="question-composer"]')
     ).not.toBeNull();
-    expect(screen.queryByText('legal_rag.examples.level_4.title')).toBeNull();
-
-    const exampleButton = screen
-      .getByText('legal_rag.examples.level_3.title')
-      .closest('button');
-    expect(exampleButton).not.toBeNull();
-    fireEvent.click(exampleButton as HTMLButtonElement);
+    fireEvent.click(screen.getByText('legal_rag.question_library.open:15'));
+    const questionTitle = await screen.findByText(
+      'legal_rag.question_library.questions.tender_offer_notice_methods.title'
+    );
+    fireEvent.click(questionTitle.closest('button') as HTMLButtonElement);
+    fireEvent.click(screen.getByText('legal_rag.question_library.apply'));
 
     expect(
       (screen.getByLabelText('question') as HTMLTextAreaElement).value
-    ).toBe('legal_rag.examples.level_3.question');
+    ).toBe(
+      'legal_rag.question_library.questions.tender_offer_notice_methods.question'
+    );
   });
 
   test('invokes the configured external runtime without a runtime selector', () => {

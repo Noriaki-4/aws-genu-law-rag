@@ -162,7 +162,6 @@ const App: React.FC = () => {
           to: '/legal-rag',
           icon: <PiBookOpenText />,
           display: 'usecase' as const,
-          sub: 'AgentCore',
         }
       : null,
     agentBuilderEnabled

@@ -1,10 +1,10 @@
 # 課題管理
 
-| ID         | 優先度 | 状態     | 課題                            | 完了条件                                                                                                                                                        |
-| ---------- | ------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GENU-001` | P0     | 検証待ち | 外部AgentCore Runtimeとの実連携 | 認証済み利用者が質問を送信し、streaming回答、citation、errorをGenU上で確認できる                                                                                |
-| `GENU-002` | P0     | 対応中   | 公式v5.5.0依存関係の脆弱性対応  | `npm audit`のproduction影響を判定し、必要な安全更新を独立commitで適用してbuild・test・CDK synthに合格する                                                       |
-| `GENU-003` | P1     | 対応中   | Streamlit固有機能の段階的移行   | 専用画面、対応範囲、Lv1〜3例題、質問整理、AgentCore chatを実装した。選択式、検索詳細、raw citation、Graph経路、例題評価の採否と実装順を決め、必要なUIを検証する |
+| ID         | 優先度 | 状態     | 課題                            | 完了条件                                                                                                                                                                |
+| ---------- | ------ | -------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GENU-001` | P0     | 検証待ち | 外部AgentCore Runtimeとの実連携 | 認証済み利用者が質問を送信し、streaming回答、citation、errorをGenU上で確認できる                                                                                        |
+| `GENU-002` | P0     | 対応中   | 公式v5.5.0依存関係の脆弱性対応  | `npm audit`のproduction影響を判定し、必要な安全更新を独立commitで適用してbuild・test・CDK synthに合格する                                                               |
+| `GENU-003` | P1     | 対応中   | Streamlit固有機能の段階的移行   | 専用画面、対応範囲、Lv1〜3の質問集15問、質問整理、AgentCore chatを実装した。選択式、検索詳細、raw citation、Graph経路、例題評価の採否と実装順を決め、必要なUIを検証する |
 
 ## 確認記録
 
@@ -14,3 +14,4 @@
 | 2026-09-01 | 固定toolchainでの初回`npm audit`は34件（low 7、moderate 12、high 14、critical 1）。自動修正は適用せず、`GENU-002`でproduction到達性と上流更新を確認する                                                                                             |
 | 2026-09-01 | version検証、Web test 278件、Web production build、CDK build、CDK test 37件・snapshot 15件、CDK lint、Lambda dry-run、offline synthに合格。生成templateで外部Runtime ARN、invoke権限、Web環境変数を確認。AWS deployは未実施                         |
 | 2026-09-01 | `/legal-rag`専用画面、ホーム・メニュー導線、対応範囲、Lv1〜3例題、固定外部Runtimeへのstreaming chat、日英文言を実装。専用テスト6件を含むWeb test 284件、Web lint、production build、CDK build・test・synthに合格。AWS実通信は`GENU-001`として未確認 |
+| 2026-09-01 | StreamlitのLv1〜3設問を全15問収録。質問集をポップアップ化し、レベル・分野・キーワード絞り込み、入力欄反映、想定参照先・法令時点の折りたたみを実装。Lv4は収録していない                                                                              |

@@ -10,9 +10,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { useTranslation } from 'react-i18next';
 import {
   PiBookOpenText,
+  PiBooks,
   PiCheckCircle,
   PiInfo,
-  PiMagnifyingGlass,
   PiSparkle,
   PiWarningCircle,
 } from 'react-icons/pi';
@@ -28,8 +28,9 @@ import {
   QuestionReadinessResult,
   requestQuestionReadiness,
 } from '../features/legalRag/questionReadiness';
+import QuestionLibraryDialog from '../features/legalRag/QuestionLibraryDialog';
+import { LEGAL_RAG_QUESTIONS } from '../features/legalRag/questionLibrary';
 
-const EXAMPLE_LEVELS = [1, 2, 3] as const;
 const SCOPE_ROWS = ['lease', 'finance', 'pharma'] as const;
 
 const LegalRagPage: React.FC = () => {
@@ -43,6 +44,7 @@ const LegalRagPage: React.FC = () => {
   const [readinessError, setReadinessError] = useState('');
   const [readinessLoading, setReadinessLoading] = useState(false);
   const [selectedChoiceId, setSelectedChoiceId] = useState('');
+  const [questionLibraryOpen, setQuestionLibraryOpen] = useState(false);
   const readinessRequestId = useRef(0);
   const { scrollableContainer, setFollowing } = useFollow();
 
@@ -287,39 +289,18 @@ const LegalRagPage: React.FC = () => {
 
           <section className="rounded-xl border border-gray-200 bg-white p-4">
             <div className="mb-1 flex items-center gap-2 font-semibold">
-              <PiMagnifyingGlass />
-              {t('legal_rag.examples.title')}
+              <PiBooks />
+              {t('legal_rag.question_library.title')}
             </div>
-            <p className="mb-4 text-sm text-gray-600">
-              {t('legal_rag.examples.intro')}
+            <p className="mb-3 text-sm text-gray-600">
+              {t('legal_rag.question_library.intro')}
             </p>
-            <div className="grid gap-3 md:grid-cols-2">
-              {EXAMPLE_LEVELS.map((level) => (
-                <button
-                  key={level}
-                  type="button"
-                  className="rounded-lg border border-gray-200 p-3 text-left transition hover:border-orange-400 hover:bg-orange-50"
-                  onClick={() =>
-                    onChangeContent(
-                      t(`legal_rag.examples.level_${level}.question`)
-                    )
-                  }>
-                  <div className="mb-1 text-xs font-semibold text-orange-700">
-                    {t('legal_rag.examples.level', { level })}
-                  </div>
-                  <div className="font-medium">
-                    {t(`legal_rag.examples.level_${level}.title`)}
-                  </div>
-                  <div className="mt-2 line-clamp-3 text-sm text-gray-600">
-                    {t(`legal_rag.examples.level_${level}.question`)}
-                  </div>
-                  <div className="mt-2 text-xs text-gray-500">
-                    {t('legal_rag.examples.expected_label')}{' '}
-                    {t(`legal_rag.examples.level_${level}.expected`)}
-                  </div>
-                </button>
-              ))}
-            </div>
+            <Button outlined onClick={() => setQuestionLibraryOpen(true)}>
+              <PiBooks className="mr-2" />
+              {t('legal_rag.question_library.open', {
+                count: LEGAL_RAG_QUESTIONS.length,
+              })}
+            </Button>
           </section>
         </div>
       )}
@@ -343,6 +324,12 @@ const LegalRagPage: React.FC = () => {
       <div className="fixed right-4 top-[calc(50vh-2rem)] z-0 lg:right-8">
         <ScrollTopBottom />
       </div>
+
+      <QuestionLibraryDialog
+        isOpen={questionLibraryOpen}
+        onClose={() => setQuestionLibraryOpen(false)}
+        onSelectQuestion={onChangeContent}
+      />
 
       <div className="fixed bottom-0 z-10 flex w-full flex-col items-center justify-center bg-gradient-to-t from-white via-white pb-1 pt-4 lg:pr-64 print:hidden">
         <InputChatContent
