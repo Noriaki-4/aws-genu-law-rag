@@ -21,11 +21,6 @@ import {
   convertFilesToStrandsContentBlocks,
 } from '../utils/strandsUtils';
 import { getRegionFromArn } from '../utils/arnUtils';
-import {
-  AgentCoreResponseStream,
-  consumeAgentCoreEventStream,
-  isDisplayableAgentCoreEvent,
-} from '../utils/agentCoreStream';
 
 // Get environment variables
 const region = import.meta.env.VITE_APP_REGION as string;
@@ -188,24 +183,79 @@ const useAgentCoreApi = (id: string) => {
 
         // Handle streaming response
         const responseWithStream = response as unknown as {
-          response?: AgentCoreResponseStream;
+          response?: ReadableStream<Uint8Array> | AsyncIterable<Uint8Array>;
           contentType?: string;
         };
 
+        let buffer = '';
+
         if (responseWithStream.response) {
           const stream = responseWithStream.response;
-          await consumeAgentCoreEventStream(stream, (eventText) => {
-            if (isFirstChunk && isDisplayableAgentCoreEvent(eventText)) {
-              popMessage(); // Remove loading message when visible output starts
+
+          if (Symbol.asyncIterator in stream) {
+            // Handle as async iterable
+            for await (const chunk of stream as AsyncIterable<Uint8Array>) {
+              if (isFirstChunk) {
+                popMessage(); // Remove loading message
+                pushMessage('assistant', '');
+                isFirstChunk = false;
+              }
+
+              const chunkText = new TextDecoder('utf-8').decode(chunk);
+              buffer += chunkText;
+
+              // Process complete lines
+              const lines = buffer.split('\n');
+              buffer = lines.pop() || '';
+
+              for (const line of lines) {
+                if (line.trim()) {
+                  let processedText = line;
+
+                  // Handle SSE format: "data: <content>"
+                  if (line.startsWith('data: ')) {
+                    processedText = line.substring(6);
+                  }
+
+                  if (processedText.trim()) {
+                    processChunk(
+                      processedText,
+                      req.model,
+                      processor,
+                      isResearchAgent
+                    );
+                  }
+                }
+              }
+            }
+
+            // Process any remaining buffer content
+            if (buffer.trim()) {
+              let processedText = buffer;
+              if (buffer.startsWith('data: ')) {
+                processedText = buffer.substring(6);
+              }
+              if (processedText.trim()) {
+                processChunk(
+                  processedText,
+                  req.model,
+                  processor,
+                  isResearchAgent
+                );
+              }
+            }
+          } else {
+            // Fallback: treat as single response
+            if (isFirstChunk) {
+              popMessage();
               pushMessage('assistant', '');
               isFirstChunk = false;
             }
-            processChunk(eventText, req.model, processor, isResearchAgent);
-          });
-
-          if (isFirstChunk) {
-            throw new Error(
-              'AgentCore Runtime returned no displayable response.'
+            processChunk(
+              JSON.stringify(response, null, 2),
+              req.model,
+              processor,
+              isResearchAgent
             );
           }
         } else {
@@ -235,11 +285,6 @@ const useAgentCoreApi = (id: string) => {
         console.error('Error invoking AgentCore Runtime:', error);
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error occurred';
-        if (isFirstChunk) {
-          popMessage(); // Replace the loading placeholder with the actual error
-          pushMessage('assistant', '');
-          isFirstChunk = false;
-        }
         // processChunk(`Error: ${errorMessage}`, req.model, processor);
         addChunkToAssistantMessage(
           errorMessage,
