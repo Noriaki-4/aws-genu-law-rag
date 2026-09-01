@@ -257,7 +257,11 @@ export class Web extends Construct {
       destinationBucket: webBucket,
       distribution: distribution,
       outputSourceDirectory: './packages/web/dist',
-      buildCommands: ['npm ci', 'npm run web:build'],
+      buildCommands: [
+        'npm install --global "npm@$(node -p \'require("./package.json").engines.npm\')"',
+        'npm ci',
+        'npm run web:build',
+      ],
       buildEnvironment: {
         NODE_OPTIONS: '--max-old-space-size=15000', // Memory for CodeBuild at deployment
         VITE_APP_API_ENDPOINT: props.apiEndpointUrl,
