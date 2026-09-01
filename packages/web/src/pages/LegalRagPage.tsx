@@ -30,11 +30,13 @@ import QuestionLibraryDialog from '../features/legalRag/QuestionLibraryDialog';
 import { LEGAL_RAG_QUESTIONS } from '../features/legalRag/questionLibrary';
 import { installReadableStreamAsyncIterator } from '../features/legalRag/readableStreamAsyncIterator';
 import LegalRagInputChatContent from '../features/legalRag/LegalRagInputChatContent';
+import { useReloadOnServiceWorkerUpdate } from '../features/legalRag/useReloadOnServiceWorkerUpdate';
 
 const SCOPE_ROWS = ['lease', 'finance', 'pharma'] as const;
 
 const LegalRagPage: React.FC = () => {
   installReadableStreamAsyncIterator();
+  useReloadOnServiceWorkerUpdate();
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const [content, setContent] = useState('');
