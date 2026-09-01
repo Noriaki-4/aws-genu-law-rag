@@ -30,6 +30,24 @@ const envs: Record<string, Partial<StackInput>> = {
   prod: {
     // Parameters for production environment
   },
+  'law-rag-poc': {
+    region: 'ap-northeast-1',
+    modelRegion: 'ap-northeast-1',
+    agentCoreRegion: 'ap-northeast-1',
+    createGenericAgentCoreRuntime: false,
+    agentCoreExternalRuntimes: [
+      {
+        name: 'LocalRagLawPoc',
+        // External runtime metadata does not support locale-specific values.
+        // eslint-disable-next-line i18nhelper/no-jp-string
+        display_name: '法令RAGエージェント',
+        description:
+          // eslint-disable-next-line i18nhelper/no-jp-string
+          '法令本文と法令関係グラフを根拠として質問に回答します。検証用途であり、回答は法的判断を確定するものではありません。',
+        arn: 'arn:aws:bedrock-agentcore:ap-northeast-1:035351467732:runtime/LocalRagLawPoc-9vW35wDaXG',
+      },
+    ],
+  },
   // If you need other environments, customize them as needed
 };
 

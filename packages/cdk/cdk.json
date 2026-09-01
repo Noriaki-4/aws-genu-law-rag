@@ -15,7 +15,8 @@
     ]
   },
   "context": {
-    "env": "",
+    "env": "law-rag-poc",
+    "region": "ap-northeast-1",
     "tagKey": null,
     "tagValue": null,
     "ragEnabled": false,
@@ -40,7 +41,7 @@
     "samlCognitoDomainName": "",
     "samlCognitoFederatedIdentityProviderName": "",
     "hiddenUseCases": {},
-    "modelRegion": "us-east-1",
+    "modelRegion": "ap-northeast-1",
     "modelIds": [
       "global.anthropic.claude-sonnet-5",
       "global.anthropic.claude-sonnet-4-6",
@@ -66,8 +67,15 @@
     "flows": [],
     "agentBuilderEnabled": false,
     "createGenericAgentCoreRuntime": false,
-    "agentCoreRegion": null,
-    "agentCoreExternalRuntimes": [],
+    "agentCoreRegion": "ap-northeast-1",
+    "agentCoreExternalRuntimes": [
+      {
+        "name": "LocalRagLawPoc",
+        "display_name": "法令RAGエージェント",
+        "description": "法令本文と法令関係グラフを根拠として質問に回答します。検証用途であり、回答は法的判断を確定するものではありません。",
+        "arn": "arn:aws:bedrock-agentcore:ap-northeast-1:035351467732:runtime/LocalRagLawPoc-9vW35wDaXG"
+      }
+    ],
     "agentCoreVpcId": null,
     "agentCoreSubnetIds": null,
     "agentCoreGatewayArns": [],
