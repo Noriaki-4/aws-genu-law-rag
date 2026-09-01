@@ -18,6 +18,6 @@
 
 ## Verification
 
-- Node.js `22.23.2`、npm `10.9.8`を使用する。
+- Node.js 22系を使用し、依存関係は`package-lock.json`と`npm ci`で再現する。
 - 変更範囲に応じてlint、test、Web build、CDK build・test・synthを実行する。
 - AgentCore連携変更ではrequest、event stream、citation、利用者向けerrorの表示を確認する。

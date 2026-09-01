@@ -33,13 +33,13 @@ OpenSearch Serverless、Neptune Analytics、S3、Bedrockとの接続と法令検
 ## version管理
 
 - GenU: `v5.5.0` / `a9e26efb3cb73c998a1385196dfcd93366683774`
-- Node.js: `22.23.2`
-- npm: `10.9.8`
+- Node.js: 22系（ローカルの推奨版は`.nvmrc`と`.node-version`を参照）
+- npm: Node.js 22系に同梱される版
 - JavaScript依存関係: rootの`package-lock.json`を正本とし、installには`npm ci`を使用する
 - Python依存関係: 各公式packageの`pyproject.toml`と`uv.lock`を正本として維持する
 
-Node.jsは`.nvmrc`と`.node-version`、npmは`package.json`の`packageManager`と`engines`で固定する。
-新規npm依存関係はexact versionで追加し、lockfileを同じcommitへ含める。
+ローカルのNode.js推奨版は`.nvmrc`と`.node-version`で示す。npm自体は完全固定せず、
+依存関係は`package-lock.json`と`npm ci`で再現し、lockfileを変更と同じcommitへ含める。
 
 ## 初期化と検証
 

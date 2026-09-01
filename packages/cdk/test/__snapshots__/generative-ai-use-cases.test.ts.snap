@@ -13328,7 +13328,6 @@ exports[`GenerativeAiUseCases matches the snapshot (closed network mode) 6`] = `
         },
         "assetBucketName": "cdk-hnb659fds-assets-123456890123-us-east-1",
         "buildCommands": [
-          "npm install --global "npm@$(node -p 'require("./package.json").engines.npm')"",
           "npm ci",
           "npm run web:build",
         ],
@@ -27014,7 +27013,6 @@ exports[`GenerativeAiUseCases matches the snapshot 6`] = `
         },
         "assetBucketName": "cdk-hnb659fds-assets-123456890123-us-east-1",
         "buildCommands": [
-          "npm install --global "npm@$(node -p 'require("./package.json").engines.npm')"",
           "npm ci",
           "npm run web:build",
         ],
