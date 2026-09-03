@@ -10,6 +10,12 @@ const mocks = vi.hoisted(() => ({
   setModelId: vi.fn(),
   setFollowing: vi.fn(),
   requestQuestionReadiness: vi.fn(),
+  messages: [] as Array<{
+    id: string;
+    role: 'assistant';
+    content: string;
+    llmType?: string;
+  }>,
 }));
 
 vi.mock('react-i18next', () => ({
@@ -24,8 +30,8 @@ vi.mock('react-i18next', () => ({
 
 vi.mock('../../src/hooks/useAgentCore', () => ({
   useAgentCore: () => ({
-    messages: [],
-    isEmpty: true,
+    messages: mocks.messages,
+    isEmpty: mocks.messages.length === 0,
     clear: mocks.clear,
     loading: false,
     invokeAgentRuntime: mocks.invokeAgentRuntime,
@@ -105,9 +111,23 @@ vi.mock('../../src/components/ScrollTopBottom', () => ({
   default: () => null,
 }));
 
+vi.mock('../../src/components/ChatMessage', () => ({
+  default: ({
+    chatContent,
+  }: {
+    chatContent?: { content: string; llmType?: string };
+  }) => (
+    <div data-testid="chat-message">
+      <span>{chatContent?.content}</span>
+      <span>{chatContent?.llmType}</span>
+    </div>
+  ),
+}));
+
 describe('LegalRagPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.messages.length = 0;
     vi.stubGlobal(
       'ResizeObserver',
       vi.fn(() => ({
@@ -163,6 +183,23 @@ describe('LegalRagPage', () => {
       expect.any(String),
       'Check the applicable provisions.'
     );
+  });
+
+  test('does not display a single GenU model for legal RAG answers', () => {
+    mocks.messages.push({
+      id: 'assistant-1',
+      role: 'assistant',
+      content: 'Legal RAG answer',
+      llmType: 'global.anthropic.claude-sonnet-5',
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/legal-rag']}>
+        <LegalRagPage />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText('global.anthropic.claude-sonnet-5')).toBeNull();
   });
 
   test('applies a refined question selected by question readiness', async () => {

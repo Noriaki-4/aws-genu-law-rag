@@ -68,6 +68,10 @@ const LegalRagPage: React.FC = () => {
   );
   const modelId = getModelId();
   const model = modelId ? findModelByModelId(modelId) : undefined;
+  const displayedMessages = useMemo(
+    () => messages.map((message) => ({ ...message, llmType: undefined })),
+    [messages]
+  );
 
   useEffect(() => {
     if (!modelId && MODELS.modelIds.length > 0) {
@@ -310,13 +314,13 @@ const LegalRagPage: React.FC = () => {
 
       {!isEmpty && (
         <div ref={scrollableContainer}>
-          {messages.map((message, index) => (
+          {displayedMessages.map((message, index) => (
             <React.Fragment key={message.id ?? index}>
               <div className="w-full border-b border-gray-300" />
               <ChatMessage
                 idx={index}
                 chatContent={message}
-                loading={loading && index === messages.length - 1}
+                loading={loading && index === displayedMessages.length - 1}
               />
             </React.Fragment>
           ))}
