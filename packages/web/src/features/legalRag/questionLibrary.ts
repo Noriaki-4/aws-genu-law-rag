@@ -10,11 +10,11 @@ export type LegalRagQuestion = {
 
 export const LEGAL_RAG_QUESTIONS: readonly LegalRagQuestion[] = [
   {
-    id: 'lease-term-differences',
+    id: 'sale-of-building-on-leased-land',
     level: 1,
     topic: 'lease',
     translationKey:
-      'legal_rag.question_library.questions.lease_term_differences',
+      'legal_rag.question_library.questions.sale_of_building_on_leased_land',
     legalAsOf: '2026-07-26',
   },
   {
@@ -25,11 +25,11 @@ export const LEGAL_RAG_QUESTIONS: readonly LegalRagQuestion[] = [
     legalAsOf: '2026-07-26',
   },
   {
-    id: 'sale-of-building-on-leased-land',
+    id: 'lease-term-differences',
     level: 1,
     topic: 'lease',
     translationKey:
-      'legal_rag.question_library.questions.sale_of_building_on_leased_land',
+      'legal_rag.question_library.questions.lease_term_differences',
     legalAsOf: '2026-07-26',
   },
   {
