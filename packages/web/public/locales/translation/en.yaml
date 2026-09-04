@@ -863,39 +863,39 @@ legal_rag:
     questions:
       nonresident_tender_offer_procedure:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Tender Offer Ordinance
-        question: A nonresident tender offeror is preparing internal procedures for commencing a tender offer. Organize the matters those procedures should cover—including selection of the public notice method, required notice content, timing of the tender offer statement, and appointment of a domestic representative—and cite the supporting provisions.
+        question: A nonresident tender offeror is preparing internal procedures for commencing a tender offer. Organize the matters those procedures should cover—including selection of the public notice method, required notice content, timing of the tender offer statement, and appointment of a domestic representative.
         title: Internal procedures for a nonresident tender offeror
       restricted_stock_compensation:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Disclosure Ordinance
-        question: If a listed company grants its own shares to officers or employees of the company or its subsidiaries as compensation, subject to transfer restrictions for a certain period, is a securities offering or secondary distribution filing required? Explain the possible exemption conditions, eligible recipients, and how long the transfer restrictions must remain, citing the supporting provisions.
+        question: If a listed company grants its own shares to officers or employees of the company or its subsidiaries as compensation, subject to transfer restrictions for a certain period, is a securities offering or secondary distribution filing required? Explain the possible exemption conditions, eligible recipients, and how long the transfer restrictions must remain.
         title: Granting restricted stock to officers and employees
       small_number_private_placement:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Definitions Ordinance
-        question: If newly issued company shares are offered only to fewer than 50 persons, is filing a securities registration statement unnecessary? Explain how offerees are counted, the resale restrictions imposed on acquirers, and notices required when soliciting, citing the supporting provisions.
+        question: If newly issued company shares are offered only to fewer than 50 persons, is filing a securities registration statement unnecessary? Explain how offerees are counted, the resale restrictions imposed on acquirers, and notices required when soliciting.
         title: Soliciting a small number of investors
       tender_offer_notice_amendment_impact:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Tender Offer Ordinance
-        question: Assume that the rules on the method or required content of the tender offer commencement notice under Article 27-3 of the Financial Instruments and Exchange Act are amended. Identify provisions in the current dataset's Cabinet Order and Cabinet Office Ordinance that may need review, explain whether each implements the notice method or notice content, and provide supporting grounds.
+        question: Assume that the rules on the method or required content of the tender offer commencement notice under Article 27-3 of the Financial Instruments and Exchange Act are amended. Identify provisions in the current dataset's Cabinet Order and Cabinet Office Ordinance that may need review and explain whether each implements the notice method or notice content.
         title: Amendment impact on a tender offer commencement notice
       tender_offer_notice_methods:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Tender Offer Ordinance
-        question: Identify the publication methods available for a tender offer commencement notice. Distinguish the information required regardless of the selected method from the conditions specific to each method, and cite the supporting provisions.
+        question: Identify the publication methods available for a tender offer commencement notice. Distinguish the information required regardless of the selected method from the conditions specific to each method.
         title: Available methods for a tender offer commencement notice
       tender_offer_notice_policy:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Tender Offer Ordinance
-        question: Our company plans an internal policy of ordinarily publishing tender offer commencement notices electronically and including only the purchase price and period. Distinguish what the company may choose from what the law does not permit it to omit, identify necessary corrections, and cite the supporting provisions.
+        question: Our company plans an internal policy of ordinarily publishing tender offer commencement notices electronically and including only the purchase price and period. Distinguish what the company may choose from what the law does not permit it to omit and identify necessary corrections.
         title: Internal policy for tender offer commencement notices
       tender_offer_share_acquisition:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Tender Offer Ordinance
-        question: Our company plans to purchase shares of an unrelated listed target company from multiple owners outside a financial instruments exchange market. Under what conditions is a tender offer required? Explain the covered securities, principal exemptions, and required procedures, citing the supporting provisions.
+        question: Our company plans to purchase shares of an unrelated listed target company from multiple owners outside a financial instruments exchange market. Under what conditions is a tender offer required? Explain the covered securities, principal exemptions, and required procedures.
         title: Tender offer requirements when accumulating shares
       tender_offer_small_holder_exemption:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Tender Offer Ordinance
-        question: When a listed target company's securities have only a small number of owners, explain in hierarchical order the provision that generally requires a tender offer, the provision establishing an exemption, and the provision specifying the conditions for a small number of owners and unanimous owner consent. Cite the supporting provisions.
+        question: When a listed target company's securities have only a small number of owners, explain in hierarchical order the provision that generally requires a tender offer, the provision establishing an exemption, and the provision specifying the conditions for a small number of owners and unanimous owner consent.
         title: Tender offer exemption for a small number of owners
       tender_offer_special_related_parties:
         expected_sources: Financial Instruments and Exchange Act and Tender Offer Ordinance
-        question: Article 2-5(2) of the Tender Offer Ordinance provides situations in which another person's ownership percentage is added to the purchaser's percentage. Who qualifies as a person whose percentage must be added? Explain with the source provision defining that person.
+        question: Article 2-5(2) of the Tender Offer Ordinance provides situations in which another person's ownership percentage is added to the purchaser's percentage. Who qualifies as a person whose percentage must be added? Include the source definition in your explanation.
         title: Definition of specially related parties used for the small-owner exemption
     reference_details: Expected sources and law date
     search_placeholder: Search titles, questions, and expected sources
