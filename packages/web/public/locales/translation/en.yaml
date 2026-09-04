@@ -839,6 +839,13 @@ language:
   vi: Vietnamese
   zh: Chinese
 legal_rag:
+  citations:
+    content_unit_id: Content Unit ID (chunk ID)
+    page: p.{{page}}
+    source: Open source document
+    text: Cited text
+    text_unavailable: The cited text was not returned.
+    title: Supporting provisions and materials ({{count}})
   description: Search across Japanese laws, subordinate regulations, and administrative guidance, and answer with supporting sources.
   input_description: Responses can take up to approximately 10 minutes.
   input_placeholder: Ask a question about the supported Japanese laws
@@ -847,45 +854,21 @@ legal_rag:
     apply: Use in question box
     expected_sources: Expected sources
     filter_label: '{{label}} ({{count}})'
-    intro: Browse 15 Level 1–3 questions and place your selection directly in the question box.
+    intro: Browse {{count}} Level 1 and Level 2 questions and place your selection directly in the question box.
     legal_as_of: Law current as of
     level: Level {{level}}
     no_results: No questions match the selected filters.
     open: Open question library ({{count}})
     question_count: '{{count}} questions'
     questions:
-      annual_securities_report_filing:
-        expected_sources: Financial Instruments and Exchange Act and Disclosure Ordinance
-        question: Which companies must file an annual securities report, and by when? Explain the required disclosures and attachments as well, citing the supporting provisions.
-        title: Filing an annual securities report
-      lease_term_differences:
-        expected_sources: Civil Code and Act on Land and Building Leases
-        question: How do the permitted contract terms differ when land is leased to construct a building and when it is leased for a purpose such as material storage without constructing a building? Please cite the supporting provisions.
-        title: Different terms for leasing land
       nonresident_tender_offer_procedure:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Tender Offer Ordinance
         question: A nonresident tender offeror is preparing internal procedures for commencing a tender offer. Organize the matters those procedures should cover—including selection of the public notice method, required notice content, timing of the tender offer statement, and appointment of a domestic representative—and cite the supporting provisions.
         title: Internal procedures for a nonresident tender offeror
-      pharma_compliance_structure:
-        expected_sources: Pharmaceuticals and Medical Devices Act and Enforcement Regulations
-        question: What responsible officers, internal structure, and operating procedures must a pharmaceutical marketing authorization holder establish for legal compliance? Explain who is responsible for what and cite the supporting provisions.
-        title: Pharmaceutical company compliance structure
-      pharma_marketing_authorization:
-        expected_sources: Pharmaceuticals and Medical Devices Act and Enforcement Regulations
-        question: What authorization is required to begin marketing pharmaceuticals as a business? Explain the authorization criteria, documents attached to the application, and notification forms, citing the supporting provisions.
-        title: Pharmaceutical marketing authorization
-      rental_home_move_out:
-        expected_sources: Act on Land and Building Leases and Civil Code
-        question: My landlord has told me to leave because my apartment lease is ending. What conditions must the landlord satisfy? Explain how restoration obligations and return of the security deposit are handled when moving out, citing the supporting provisions.
-        title: Moving out of a rental home
       restricted_stock_compensation:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Disclosure Ordinance
         question: If a listed company grants its own shares to officers or employees of the company or its subsidiaries as compensation, subject to transfer restrictions for a certain period, is a securities offering or secondary distribution filing required? Explain the possible exemption conditions, eligible recipients, and how long the transfer restrictions must remain, citing the supporting provisions.
         title: Granting restricted stock to officers and employees
-      sale_of_building_on_leased_land:
-        expected_sources: Civil Code and Act on Land and Building Leases
-        question: I want to sell my house built on leased land to a third party. Is the landowner's consent required? Explain what I can do if consent is refused, citing the supporting provisions.
-        title: Selling a building on leased land
       small_number_private_placement:
         expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Definitions Ordinance
         question: If newly issued company shares are offered only to fewer than 50 persons, is filing a securities registration statement unnecessary? Explain how offerees are counted, the resale restrictions imposed on acquirers, and notices required when soliciting, citing the supporting provisions.
@@ -921,34 +904,23 @@ legal_rag:
     topics:
       all: All areas
       finance: Financial instruments
-      lease: Land and building leases
-      pharma: Pharmaceuticals and medical devices
   readiness:
     apply: Use this revised question
-    clarification_default: Please clarify your question.
+    clarification_recommended: To preserve search accuracy, consider adding or clarifying the following point in your question.
     edit_instruction: Add the missing details to the question box, then select "Refine question" again.
     error: Failed to refine the question
     organize: Refine question
-    ready: The question is ready. Send it to start the research.
-    refined_question: Revised question if selected
+    ready: This question is ready for research. Here is a version that may improve search accuracy.
+    ready_instruction: You can also keep your original question and send it as written.
+    recommended_question: Suggested question
   runtime_not_configured: The AgentCore Runtime for Legal RAG is not configured. Contact your administrator.
   scope:
     field: Area
     intro: Questions are limited to the loaded laws and guidance. Out-of-scope questions may have no citations or lower-confidence answers.
-    notes: Notes
     rows:
       finance:
         field: Financial instruments
-        notes: All provisions in the loaded materials are covered.
         sources: Financial Instruments and Exchange Act, enforcement order, related ordinances, and supervisory, disclosure, and tender-offer guidance
-      lease:
-        field: Land and building leases
-        notes: The Civil Code scope is limited to Articles 601 through 622-2.
-        sources: Act on Land and Building Leases and Civil Code lease provisions
-      pharma:
-        field: Pharmaceuticals and medical devices
-        notes: All provisions in the loaded materials are covered.
-        sources: Pharmaceuticals and Medical Devices Act, enforcement regulations, compliance Q&A, and advertising standards
     sources: Supported laws and materials
     title: Supported scope
   title: Legal RAG

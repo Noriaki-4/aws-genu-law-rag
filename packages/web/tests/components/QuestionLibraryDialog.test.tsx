@@ -14,7 +14,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('QuestionLibraryDialog', () => {
-  test('filters Level 3 questions and applies the selected question', () => {
+  test('filters Level 2 questions and applies the selected question', () => {
     const onClose = vi.fn();
     const onSelectQuestion = vi.fn();
     render(
@@ -26,11 +26,11 @@ describe('QuestionLibraryDialog', () => {
     );
 
     fireEvent.click(
-      screen.getByText('legal_rag.question_library.filter_label:9')
+      screen.getByText('legal_rag.question_library.filter_label:6')
     );
     expect(
       screen.queryByText(
-        'legal_rag.question_library.questions.lease_term_differences.title'
+        'legal_rag.question_library.questions.small_number_private_placement.title'
       )
     ).toBeNull();
 

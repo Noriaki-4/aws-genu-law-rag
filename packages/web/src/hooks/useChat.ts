@@ -17,6 +17,7 @@ import {
   UpdateFeedbackRequest,
   ListChatsResponse,
   AdditionalModelRequestFields,
+  LegalRagCitation,
   Metadata,
 } from 'generative-ai-use-cases';
 import { useEffect, useMemo } from 'react';
@@ -132,7 +133,8 @@ const useChatState = create<{
     chunk: string,
     trace?: string,
     model?: Model,
-    metadata?: Metadata
+    metadata?: Metadata,
+    legalRagCitations?: LegalRagCitation[]
   ) => void;
   addMessageIdsToUnrecordedMessages: (id: string) => ToBeRecordedMessage[];
   replaceMessages: (id: string, messages: RecordedMessage[]) => void;
@@ -404,7 +406,8 @@ const useChatState = create<{
     chunk: string,
     trace?: string,
     model?: Model,
-    metadata?: Metadata
+    metadata?: Metadata,
+    legalRagCitations?: LegalRagCitation[]
   ) => {
     set((state) => {
       const newChats = produce(state.chats, (draft) => {
@@ -444,6 +447,8 @@ const useChatState = create<{
           trace: (oldAssistantMessage.trace || '') + (trace || ''),
           llmType: model?.modelId || oldAssistantMessage.llmType,
           metadata: metadata || oldAssistantMessage.metadata,
+          legalRagCitations:
+            legalRagCitations || oldAssistantMessage.legalRagCitations,
           traceInlineMessage:
             traceInlineMessage ?? oldAssistantMessage.traceInlineMessage,
         };
@@ -1321,9 +1326,17 @@ const useChat = (id: string, chatId?: string) => {
       chunk: string,
       trace?: string,
       model?: Model,
-      metadata?: Metadata
+      metadata?: Metadata,
+      legalRagCitations?: LegalRagCitation[]
     ) => {
-      addChunkToAssistantMessage(id, chunk, trace, model, metadata);
+      addChunkToAssistantMessage(
+        id,
+        chunk,
+        trace,
+        model,
+        metadata,
+        legalRagCitations
+      );
     },
     addMessageIdsToUnrecordedMessages: () => {
       return addMessageIdsToUnrecordedMessages(id);

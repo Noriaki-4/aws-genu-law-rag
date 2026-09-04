@@ -12,24 +12,16 @@ const modelRegion = import.meta.env.VITE_APP_MODEL_REGION as string;
 const identityPoolId = import.meta.env.VITE_APP_IDENTITY_POOL_ID as string;
 const userPoolId = import.meta.env.VITE_APP_USER_POOL_ID as string;
 
-export type QuestionReadinessChoice = {
-  choiceId: string;
-  label: string;
-  refinedQuestion: string;
-};
-
 export type QuestionReadinessResult = {
-  decision: 'ready' | 'clarification_required';
+  decision: 'ready' | 'clarification_recommended';
   reason: string;
-  clarificationQuestion: string | null;
-  choices: QuestionReadinessChoice[];
+  recommendation: string;
 };
 
 type QuestionReadinessWireResult = {
   decision?: unknown;
   reason?: unknown;
-  clarification_question?: unknown;
-  choices?: unknown;
+  recommendation?: unknown;
 };
 
 type RuntimeResponse = {
@@ -87,44 +79,23 @@ const readTextResponse = async (response: RuntimeResponse): Promise<string> => {
   return text;
 };
 
-const parseResult = (text: string): QuestionReadinessResult => {
+export const parseQuestionReadinessResult = (
+  text: string
+): QuestionReadinessResult => {
   const value = JSON.parse(text) as QuestionReadinessWireResult;
   if (
     (value.decision !== 'ready' &&
-      value.decision !== 'clarification_required') ||
+      value.decision !== 'clarification_recommended') ||
     typeof value.reason !== 'string' ||
-    (value.clarification_question !== null &&
-      typeof value.clarification_question !== 'string') ||
-    !Array.isArray(value.choices)
+    typeof value.recommendation !== 'string'
   ) {
     throw new Error('Question readiness response has an invalid shape.');
   }
 
-  const choices = value.choices.map((item) => {
-    if (
-      typeof item !== 'object' ||
-      item === null ||
-      !('choice_id' in item) ||
-      typeof item.choice_id !== 'string' ||
-      !('label' in item) ||
-      typeof item.label !== 'string' ||
-      !('refined_question' in item) ||
-      typeof item.refined_question !== 'string'
-    ) {
-      throw new Error('Question readiness choice has an invalid shape.');
-    }
-    return {
-      choiceId: item.choice_id,
-      label: item.label,
-      refinedQuestion: item.refined_question,
-    };
-  });
-
   return {
     decision: value.decision,
     reason: value.reason,
-    clarificationQuestion: value.clarification_question,
-    choices,
+    recommendation: value.recommendation,
   };
 };
 
@@ -174,5 +145,5 @@ export const requestQuestionReadiness = async ({
     })
   )) as RuntimeResponse;
 
-  return parseResult(await readTextResponse(response));
+  return parseQuestionReadinessResult(await readTextResponse(response));
 };

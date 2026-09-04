@@ -47,6 +47,19 @@ export type UnrecordedMessage = {
   extraData?: ExtraData[];
   llmType?: string;
   metadata?: Metadata;
+  legalRagCitations?: LegalRagCitation[];
+};
+
+export type LegalRagCitation = {
+  documentId: string;
+  contentUnitId?: string;
+  title?: string;
+  heading?: string;
+  sourceObjectUri?: string;
+  sourcePage?: number;
+  text?: string;
+  evidenceLane?: string;
+  evidenceRole?: string;
 };
 
 export type ExtraData = {

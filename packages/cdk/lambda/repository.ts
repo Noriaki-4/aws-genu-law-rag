@@ -356,6 +356,7 @@ export const batchCreateMessages = async (
         usecase: m.usecase,
         llmType: m.llmType ?? '',
         metadata: m.metadata,
+        legalRagCitations: m.legalRagCitations,
       };
     }
   );

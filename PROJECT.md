@@ -19,7 +19,7 @@ OpenSearch Serverless、Neptune Analytics、S3、Bedrockとの接続と法令検
 利用者はRuntimeやモデルを選択せずに質問できる。画面は次を提供する。
 
 - 対応している法令・ガイドラインの範囲
-- StreamlitのLv.1〜3を収録した法令横断質問集（15問）
+- 金融商品取引法のLv.1・2を収録した質問集（9問）
 - 質問集ポップアップでのレベル・分野・キーワード絞り込み、質問欄への反映
 - 検索前の質問整理と、確認候補から選んだ修正版の質問欄への反映
 - Cognito認証済み利用者から外部AgentCore Runtimeへのstreaming chat
@@ -66,8 +66,9 @@ production buildでは有効にならない。質問送信は実行せず、画�
 
 ## 残るStreamlit差分
 
-選択式問題、検索詳細設定、citation本文の個別展開、Graph経路の可視化、例題の自動評価は
-AgentCore wire contractに現在含まれないため未実装である。Runtimeが固定する検索・モデル設定を一般利用者へ
-公開するかを先に決め、必要な構造化結果だけをAgentCore adapterから返す。
+選択式問題、検索詳細設定、Graph経路の可視化、例題の自動評価はAgentCore wire contractに現在含まれないため
+未実装である。citationは本文とContent Unit IDを構造化イベントで受け取り、回答ごとに個別展開できる。
+Runtimeが固定する検索・モデル設定を一般利用者へ公開するかを先に決め、必要な構造化結果だけを
+AgentCore adapterから返す。
 
 本システムは法務・RAGの検証用途であり、表示する回答によって法的判断を確定しない。

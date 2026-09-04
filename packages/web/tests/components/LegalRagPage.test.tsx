@@ -15,6 +15,14 @@ const mocks = vi.hoisted(() => ({
     role: 'assistant';
     content: string;
     llmType?: string;
+    legalRagCitations?: Array<{
+      documentId: string;
+      contentUnitId?: string;
+      title?: string;
+      heading?: string;
+      sourcePage?: number;
+      text?: string;
+    }>;
   }>,
 }));
 
@@ -147,12 +155,16 @@ describe('LegalRagPage', () => {
 
     expect(screen.getByText('legal_rag.title')).toBeTruthy();
     expect(screen.getByText('legal_rag.scope.title')).toBeTruthy();
+    expect(screen.getByText('legal_rag.scope.rows.finance.field')).toBeTruthy();
+    expect(screen.queryByText('legal_rag.scope.rows.lease.field')).toBeNull();
+    expect(screen.queryByText('legal_rag.scope.rows.pharma.field')).toBeNull();
+    expect(screen.queryByText('legal_rag.scope.notes')).toBeNull();
     expect(
       screen
         .getByText('legal_rag.readiness.organize')
         .closest('[data-testid="question-composer"]')
     ).not.toBeNull();
-    fireEvent.click(screen.getByText('legal_rag.question_library.open:15'));
+    fireEvent.click(screen.getByText('legal_rag.question_library.open:9'));
     const questionTitle = await screen.findByText(
       'legal_rag.question_library.questions.tender_offer_notice_methods.title'
     );
@@ -202,23 +214,40 @@ describe('LegalRagPage', () => {
     expect(screen.queryByText('global.anthropic.claude-sonnet-5')).toBeNull();
   });
 
-  test('applies a refined question selected by question readiness', async () => {
-    mocks.requestQuestionReadiness.mockResolvedValue({
-      decision: 'clarification_required',
-      reason: 'The actor changes the applicable search path.',
-      clarificationQuestion: 'Who performs the action?',
-      choices: [
+  test('shows citation text and content unit ID in expandable details', () => {
+    mocks.messages.push({
+      id: 'assistant-1',
+      role: 'assistant',
+      content: 'Legal RAG answer',
+      legalRagCitations: [
         {
-          choiceId: 'company',
-          label: 'Company',
-          refinedQuestion: 'What requirements apply when a company acts?',
-        },
-        {
-          choiceId: 'person',
-          label: 'Individual',
-          refinedQuestion: 'What requirements apply when an individual acts?',
+          documentId: 'law-1',
+          contentUnitId: 'law-1-article-1-paragraph-1',
+          title: 'Companies Act',
+          heading: 'Article 1',
+          sourcePage: 3,
+          text: 'Cited provision text',
         },
       ],
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/legal-rag']}>
+        <LegalRagPage />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('legal_rag.citations.title:1')).toBeTruthy();
+    expect(screen.getByText(/Companies Act \/ Article 1/)).toBeTruthy();
+    expect(screen.getByText('Cited provision text')).toBeTruthy();
+    expect(screen.getByText('law-1-article-1-paragraph-1')).toBeTruthy();
+  });
+
+  test('applies the recommended question when readiness is ready', async () => {
+    mocks.requestQuestionReadiness.mockResolvedValue({
+      decision: 'ready',
+      reason: 'The actor and action are clear.',
+      recommendation: 'What requirements apply when a company acts?',
     });
 
     render(
@@ -233,7 +262,9 @@ describe('LegalRagPage', () => {
     fireEvent.click(screen.getByText('legal_rag.readiness.organize'));
 
     await waitFor(() => {
-      expect(screen.getByText('Who performs the action?')).toBeTruthy();
+      expect(
+        screen.getByText('What requirements apply when a company acts?')
+      ).toBeTruthy();
     });
     expect(mocks.requestQuestionReadiness).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -243,11 +274,36 @@ describe('LegalRagPage', () => {
       })
     );
 
-    fireEvent.click(screen.getByText('Individual'));
     fireEvent.click(screen.getByText('legal_rag.readiness.apply'));
 
     expect(
       (screen.getByLabelText('question') as HTMLTextAreaElement).value
-    ).toBe('What requirements apply when an individual acts?');
+    ).toBe('What requirements apply when a company acts?');
+  });
+
+  test('shows a clarification recommendation without applying it', async () => {
+    mocks.requestQuestionReadiness.mockResolvedValue({
+      decision: 'clarification_recommended',
+      reason: 'The action target is missing.',
+      recommendation: 'Specify which document the company submits.',
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/legal-rag']}>
+        <LegalRagPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByLabelText('question'), {
+      target: { value: 'What must the company submit?' },
+    });
+    fireEvent.click(screen.getByText('legal_rag.readiness.organize'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Specify which document the company submits.')
+      ).toBeTruthy();
+    });
+    expect(screen.queryByText('legal_rag.readiness.apply')).toBeNull();
   });
 });

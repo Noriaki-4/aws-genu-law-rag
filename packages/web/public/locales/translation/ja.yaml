@@ -684,6 +684,13 @@ language:
   vi: ベトナム語
   zh: 中国語
 legal_rag:
+  citations:
+    content_unit_id: Content Unit ID（チャンクID）
+    page: p.{{page}}
+    source: 原資料を開く
+    text: 本文
+    text_unavailable: 本文は取得できませんでした。
+    title: 根拠として引用した条文・資料（{{count}}件）
   description: 複数の法令・下位法令・行政ガイドラインを横断検索し、根拠を示して回答します。
   input_description: 回答には最大10分程度かかります。
   input_placeholder: 法令について質問してください
@@ -692,45 +699,21 @@ legal_rag:
     apply: 入力欄へ反映
     expected_sources: 想定する参照先
     filter_label: '{{label}}（{{count}}）'
-    intro: Lv.1〜3の質問を15問用意しています。選んだ質問を入力欄へ直接反映できます。
+    intro: Lv.1・2の質問を{{count}}問用意しています。選んだ質問を入力欄へ直接反映できます。
     legal_as_of: 法令時点
     level: Lv.{{level}}
     no_results: 条件に一致する質問がありません。
     open: 質問集を開く（{{count}}問）
     question_count: '{{count}}問'
     questions:
-      annual_securities_report_filing:
-        expected_sources: 金融商品取引法＋開示府令
-        question: 有価証券報告書は、どのような会社が、いつまでに提出する必要がありますか。記載しなければならない事項と添付書類も含めて、根拠となる条文とともに説明してください。
-        title: 有価証券報告書の提出
-      lease_term_differences:
-        expected_sources: 民法＋借地借家法
-        question: 建物を建てるために土地を借りる場合と、資材置き場のように建物を建てない目的で土地を借りる場合とで、契約できる期間のルールはどう違いますか。根拠となる条文も示してください。
-        title: 土地を借りる期間の違い
       nonresident_tender_offer_procedure:
         expected_sources: 金融商品取引法＋施行令＋公開買付府令
         question: 非居住者である公開買付者が、公開買付けを開始するための社内業務手順を作ろうとしています。公告方法の選択、公告への掲載事項、公開買付届出書の提出時期及び国内代理人の選任について、手順に含めるべき事項を根拠条文とともに整理してください。
         title: 非居住公開買付者の社内業務手順
-      pharma_compliance_structure:
-        expected_sources: 薬機法＋薬機法施行規則
-        question: 医薬品を製造販売する会社は、法令を守るためにどのような責任者を置き、どのような社内体制と業務手順を整える必要がありますか。誰が何を担当するのかが分かるように、根拠となる条文とともに説明してください。
-        title: 医薬品会社の法令遵守体制
-      pharma_marketing_authorization:
-        expected_sources: 薬機法＋薬機法施行規則
-        question: 医薬品の製造販売を事業として始めるには、どのような許可が必要ですか。許可を受けるための基準と、許可申請書に添付する書類や届出の様式も含めて、根拠となる条文とともに説明してください。
-        title: 医薬品の製造販売業の許可
-      rental_home_move_out:
-        expected_sources: 借地借家法＋民法
-        question: アパートの契約が終わるので出ていってほしいと大家から言われました。大家の側にはどのような条件が必要ですか。退去時の原状回復や敷金の返還がどう扱われるかも含めて、根拠となる条文とともに教えてください。
-        title: 賃貸住宅を退去するとき
       restricted_stock_compensation:
         expected_sources: 金融商品取引法＋施行令＋開示府令
         question: 上場会社が自社や子会社の役職員へ、譲渡を一定期間制限した自社株式を報酬として交付する場合、有価証券の募集・売出しの届出は必要ですか。届出が不要となり得る条件、対象にできる人の範囲、譲渡制限をいつまで課す必要があるかも含めて、根拠となる条文とともに説明してください。
         title: 役職員への譲渡制限付株式の交付
-      sale_of_building_on_leased_land:
-        expected_sources: 民法＋借地借家法
-        question: 借りている土地の上に建てた自分の家を第三者に売りたいのですが、地主の承諾は必要ですか。承諾してもらえないときにどうすればよいかも含めて、根拠となる条文とともに教えてください。
-        title: 借地上の建物を売るとき
       small_number_private_placement:
         expected_sources: 金融商品取引法＋施行令＋定義府令
         question: 新しく発行する自社株式を、50名に満たない少数の相手にだけ引き受けてもらう場合、有価証券届出書の提出は不要になりますか。勧誘の相手方の人数の数え方と、取得者に課される転売制限の内容や勧誘時に必要な告知も含めて、根拠となる条文とともに説明してください。
@@ -766,34 +749,23 @@ legal_rag:
     topics:
       all: すべての分野
       finance: 金融商品取引法
-      lease: 借地借家・賃貸借
-      pharma: 薬機法
   readiness:
     apply: この質問案を入力欄へ反映
-    clarification_default: 質問の内容を確認してください。
+    clarification_recommended: 検索精度を保つため、次の点を質問文に追記または明確化することを推奨します。
     edit_instruction: 不足している内容を質問入力欄へ追加し、もう一度「質問を整理する」を押してください。
     error: 質問の整理に失敗しました
     organize: 質問を整理する
-    ready: 質問の整理が完了しました。このまま送信して調査を開始できます。
-    refined_question: 選択した場合の質問案
+    ready: この質問は調査を開始できます。下記は検索精度を高める質問文案です。
+    ready_instruction: 質問案を使わず、元の質問のまま送信することもできます。
+    recommended_question: 検索精度を高める質問案
   runtime_not_configured: 法令RAG用のAgentCore Runtimeが設定されていません。管理者に連絡してください。
   scope:
     field: 分野
     intro: 質問は投入済みの法令・資料に限られます。範囲外の質問では、引用が見つからないか確度が低くなる場合があります。
-    notes: 注意
     rows:
       finance:
         field: 金融商品取引法
-        notes: 投入済み資料の全条を対象とします。
         sources: 金融商品取引法、施行令、関連府省令、監督・開示・公開買付けガイドライン
-      lease:
-        field: 借地借家・賃貸借
-        notes: 民法は第601条から第622条の2までが対象です。
-        sources: 借地借家法、民法（賃貸借）
-      pharma:
-        field: 薬機法
-        notes: 投入済み資料の全条を対象とします。
-        sources: 医薬品医療機器等法、施行規則、法令遵守Q&A、適正広告基準
     sources: 対応している法令・資料
     title: 回答できる範囲
   title: 法令RAG

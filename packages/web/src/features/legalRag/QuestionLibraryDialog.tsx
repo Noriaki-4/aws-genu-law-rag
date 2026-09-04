@@ -5,7 +5,7 @@ import { PiBooks, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import Button from '../../components/Button';
 import { LEGAL_RAG_QUESTIONS, LegalRagQuestionTopic } from './questionLibrary';
 
-type LevelFilter = 'all' | 1 | 2 | 3;
+type LevelFilter = 'all' | 1 | 2;
 type TopicFilter = 'all' | LegalRagQuestionTopic;
 
 type Props = {
@@ -14,13 +14,8 @@ type Props = {
   onSelectQuestion: (question: string) => void;
 };
 
-const LEVEL_FILTERS: readonly LevelFilter[] = ['all', 1, 2, 3];
-const TOPIC_FILTERS: readonly TopicFilter[] = [
-  'all',
-  'lease',
-  'finance',
-  'pharma',
-];
+const LEVEL_FILTERS: readonly LevelFilter[] = ['all', 1, 2];
+const TOPIC_FILTERS: readonly TopicFilter[] = ['all', 'finance'];
 
 const QuestionLibraryDialog: React.FC<Props> = ({
   isOpen,

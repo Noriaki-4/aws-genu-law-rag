@@ -30,9 +30,10 @@ import QuestionLibraryDialog from '../features/legalRag/QuestionLibraryDialog';
 import { LEGAL_RAG_QUESTIONS } from '../features/legalRag/questionLibrary';
 import { installReadableStreamAsyncIterator } from '../features/legalRag/readableStreamAsyncIterator';
 import LegalRagInputChatContent from '../features/legalRag/LegalRagInputChatContent';
+import LegalRagCitations from '../features/legalRag/LegalRagCitations';
 import { useReloadOnServiceWorkerUpdate } from '../features/legalRag/useReloadOnServiceWorkerUpdate';
 
-const SCOPE_ROWS = ['lease', 'finance', 'pharma'] as const;
+const SCOPE_ROWS = ['finance'] as const;
 
 const LegalRagPage: React.FC = () => {
   installReadableStreamAsyncIterator();
@@ -46,7 +47,6 @@ const LegalRagPage: React.FC = () => {
   );
   const [readinessError, setReadinessError] = useState('');
   const [readinessLoading, setReadinessLoading] = useState(false);
-  const [selectedChoiceId, setSelectedChoiceId] = useState('');
   const [questionLibraryOpen, setQuestionLibraryOpen] = useState(false);
   const readinessRequestId = useRef(0);
   const { scrollableContainer, setFollowing } = useFollow();
@@ -125,7 +125,6 @@ const LegalRagPage: React.FC = () => {
       });
       if (readinessRequestId.current !== requestId) return;
       setReadiness(result);
-      setSelectedChoiceId(result.choices[0]?.choiceId ?? '');
     } catch (error) {
       if (readinessRequestId.current !== requestId) return;
       setReadinessError(
@@ -138,16 +137,13 @@ const LegalRagPage: React.FC = () => {
     }
   }, [content, loading, model, readinessLoading, runtime, sessionId, t]);
 
-  const selectedChoice = readiness?.choices.find(
-    (choice) => choice.choiceId === selectedChoiceId
-  );
   const organizeDisabled =
     !content.trim() || !runtime || !model || loading || readinessLoading;
 
-  const applyRefinedQuestion = useCallback(() => {
-    if (!selectedChoice) return;
-    onChangeContent(selectedChoice.refinedQuestion);
-  }, [onChangeContent, selectedChoice]);
+  const applyRecommendedQuestion = useCallback(() => {
+    if (!readiness || readiness.decision !== 'ready') return;
+    onChangeContent(readiness.recommendation);
+  }, [onChangeContent, readiness]);
 
   return (
     <div className={`${!isEmpty ? 'screen:pb-48' : 'pb-44'} relative`}>
@@ -196,53 +192,31 @@ const LegalRagPage: React.FC = () => {
                 <p className="font-semibold">
                   {t('legal_rag.readiness.ready')}
                 </p>
-                <p className="mt-1 text-sm">{readiness.reason}</p>
+                <div className="mt-3 rounded-lg bg-white p-3">
+                  <p className="text-xs font-semibold text-gray-600">
+                    {t('legal_rag.readiness.recommended_question')}
+                  </p>
+                  <p className="mt-1 text-sm">{readiness.recommendation}</p>
+                </div>
+                <Button className="mt-3" onClick={applyRecommendedQuestion}>
+                  {t('legal_rag.readiness.apply')}
+                </Button>
+                <p className="mt-2 text-sm">
+                  {t('legal_rag.readiness.ready_instruction')}
+                </p>
               </div>
             </div>
           ) : (
             <div className="text-amber-950">
               <p className="font-semibold">
-                {readiness.clarificationQuestion ||
-                  t('legal_rag.readiness.clarification_default')}
+                {t('legal_rag.readiness.clarification_recommended')}
               </p>
-              <p className="mt-1 text-sm">{readiness.reason}</p>
-              {readiness.choices.length > 0 ? (
-                <div className="mt-4 space-y-3">
-                  <div className="space-y-2">
-                    {readiness.choices.map((choice) => (
-                      <label
-                        key={choice.choiceId}
-                        className="flex cursor-pointer items-center gap-2 rounded-lg border border-amber-200 bg-white p-3">
-                        <input
-                          type="radio"
-                          name="legal-rag-readiness-choice"
-                          value={choice.choiceId}
-                          checked={selectedChoiceId === choice.choiceId}
-                          onChange={() => setSelectedChoiceId(choice.choiceId)}
-                        />
-                        <span>{choice.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {selectedChoice && (
-                    <div className="rounded-lg bg-white p-3">
-                      <p className="text-xs font-semibold text-gray-600">
-                        {t('legal_rag.readiness.refined_question')}
-                      </p>
-                      <p className="mt-1 text-sm">
-                        {selectedChoice.refinedQuestion}
-                      </p>
-                    </div>
-                  )}
-                  <Button onClick={applyRefinedQuestion}>
-                    {t('legal_rag.readiness.apply')}
-                  </Button>
-                </div>
-              ) : (
-                <p className="mt-3 text-sm">
-                  {t('legal_rag.readiness.edit_instruction')}
-                </p>
-              )}
+              <div className="mt-3 rounded-lg bg-white p-3 text-sm">
+                {readiness.recommendation}
+              </div>
+              <p className="mt-3 text-sm">
+                {t('legal_rag.readiness.edit_instruction')}
+              </p>
             </div>
           )}
         </section>
@@ -269,9 +243,6 @@ const LegalRagPage: React.FC = () => {
                       <th className="border p-2">
                         {t('legal_rag.scope.sources')}
                       </th>
-                      <th className="border p-2">
-                        {t('legal_rag.scope.notes')}
-                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -282,9 +253,6 @@ const LegalRagPage: React.FC = () => {
                         </td>
                         <td className="border p-2">
                           {t(`legal_rag.scope.rows.${row}.sources`)}
-                        </td>
-                        <td className="border p-2 text-gray-600">
-                          {t(`legal_rag.scope.rows.${row}.notes`)}
                         </td>
                       </tr>
                     ))}
@@ -300,7 +268,9 @@ const LegalRagPage: React.FC = () => {
               {t('legal_rag.question_library.title')}
             </div>
             <p className="mb-3 text-sm text-gray-600">
-              {t('legal_rag.question_library.intro')}
+              {t('legal_rag.question_library.intro', {
+                count: LEGAL_RAG_QUESTIONS.length,
+              })}
             </p>
             <Button outlined onClick={() => setQuestionLibraryOpen(true)}>
               <PiBooks className="mr-2" />
@@ -322,6 +292,9 @@ const LegalRagPage: React.FC = () => {
                 chatContent={message}
                 loading={loading && index === displayedMessages.length - 1}
               />
+              {message.role === 'assistant' && message.legalRagCitations && (
+                <LegalRagCitations citations={message.legalRagCitations} />
+              )}
             </React.Fragment>
           ))}
           <div className="w-full border-b border-gray-300" />
