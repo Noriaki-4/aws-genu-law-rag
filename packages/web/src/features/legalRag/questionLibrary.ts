@@ -26,14 +26,6 @@ export const LEGAL_RAG_QUESTIONS: readonly LegalRagQuestion[] = [
     legalAsOf: '2026-07-26',
   },
   {
-    id: 'tender-offer-notice-methods',
-    level: 1,
-    topic: 'finance',
-    translationKey:
-      'legal_rag.question_library.questions.tender_offer_notice_methods',
-    legalAsOf: '2026-08-27',
-  },
-  {
     id: 'restricted-stock-compensation',
     level: 2,
     topic: 'finance',
@@ -71,14 +63,6 @@ export const LEGAL_RAG_QUESTIONS: readonly LegalRagQuestion[] = [
     topic: 'finance',
     translationKey:
       'legal_rag.question_library.questions.tender_offer_notice_amendment_impact',
-    legalAsOf: '2026-08-27',
-  },
-  {
-    id: 'nonresident-tender-offer-procedure',
-    level: 2,
-    topic: 'finance',
-    translationKey:
-      'legal_rag.question_library.questions.nonresident_tender_offer_procedure',
     legalAsOf: '2026-08-27',
   },
 ] as const;

@@ -164,9 +164,9 @@ describe('LegalRagPage', () => {
         .getByText('legal_rag.readiness.organize')
         .closest('[data-testid="question-composer"]')
     ).not.toBeNull();
-    fireEvent.click(screen.getByText('legal_rag.question_library.open:9'));
+    fireEvent.click(screen.getByText('legal_rag.question_library.open:7'));
     const questionTitle = await screen.findByText(
-      'legal_rag.question_library.questions.tender_offer_notice_methods.title'
+      'legal_rag.question_library.questions.tender_offer_share_acquisition.title'
     );
     fireEvent.click(questionTitle.closest('button') as HTMLButtonElement);
     fireEvent.click(screen.getByText('legal_rag.question_library.apply'));
@@ -174,7 +174,7 @@ describe('LegalRagPage', () => {
     expect(
       (screen.getByLabelText('question') as HTMLTextAreaElement).value
     ).toBe(
-      'legal_rag.question_library.questions.tender_offer_notice_methods.question'
+      'legal_rag.question_library.questions.tender_offer_share_acquisition.question'
     );
   });
 

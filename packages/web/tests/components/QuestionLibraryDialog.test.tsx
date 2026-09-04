@@ -26,7 +26,7 @@ describe('QuestionLibraryDialog', () => {
     );
 
     fireEvent.click(
-      screen.getByText('legal_rag.question_library.filter_label:6')
+      screen.getByText('legal_rag.question_library.filter_label:5')
     );
     expect(
       screen.queryByText(

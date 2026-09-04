@@ -3,15 +3,15 @@ import { LEGAL_RAG_QUESTIONS } from '../../src/features/legalRag/questionLibrary
 
 describe('legal RAG question library', () => {
   test('contains the selected Level 1 and Level 2 finance questions', () => {
-    expect(LEGAL_RAG_QUESTIONS).toHaveLength(9);
+    expect(LEGAL_RAG_QUESTIONS).toHaveLength(7);
     expect(
       LEGAL_RAG_QUESTIONS.reduce<Record<number, number>>((counts, question) => {
         counts[question.level] = (counts[question.level] ?? 0) + 1;
         return counts;
       }, {})
-    ).toEqual({ 1: 3, 2: 6 });
+    ).toEqual({ 1: 2, 2: 5 });
     expect(LEGAL_RAG_QUESTIONS.map((question) => question.level)).toEqual([
-      1, 1, 1, 2, 2, 2, 2, 2, 2,
+      1, 1, 2, 2, 2, 2, 2,
     ]);
     expect(
       LEGAL_RAG_QUESTIONS.filter((question) => question.level === 1).map(
@@ -20,7 +20,6 @@ describe('legal RAG question library', () => {
     ).toEqual([
       'small-number-private-placement',
       'tender-offer-share-acquisition',
-      'tender-offer-notice-methods',
     ]);
     expect(
       LEGAL_RAG_QUESTIONS.every((question) => question.topic === 'finance')

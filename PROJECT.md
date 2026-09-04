@@ -19,7 +19,7 @@ OpenSearch Serverless、Neptune Analytics、S3、Bedrockとの接続と法令検
 利用者はRuntimeやモデルを選択せずに質問できる。画面は次を提供する。
 
 - 対応している法令・ガイドラインの範囲
-- 金融商品取引法のLv.1・2を収録した質問集（9問）
+- 金融商品取引法のLv.1・2を収録した質問集（7問）
 - 質問集ポップアップでのレベル・分野・キーワード絞り込み、質問欄への反映
 - 検索前の質問整理と、確認候補から選んだ修正版の質問欄への反映
 - Cognito認証済み利用者から外部AgentCore Runtimeへのstreaming chat
