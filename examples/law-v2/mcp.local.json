@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "law-v2": {
+      "command": "npx",
+      "args": [
+        "--yes",
+        "mcp-remote@0.14.3",
+        "http://127.0.0.1:18000/mcp",
+        "--transport",
+        "http-only"
+      ],
+      "metadata": {
+        "category": "Search",
+        "description": "Law consultation: datasets, asynchronous consultation, saved results and requirements. Local single-user verification only."
+      }
+    }
+  }
+}

@@ -34,6 +34,8 @@ import McpChatPage from './pages/McpChatPage';
 import AgentCorePage from './pages/AgentCorePage.tsx';
 import AgentCoreListPage from './pages/AgentCoreListPage.tsx';
 import LegalRagPage from './pages/LegalRagPage.tsx';
+import LawWorkspace from './features/legalRag/LawWorkspace';
+import { lawRestEnabled } from './features/legalRag/restConfig';
 import ResearchAgentPage from './pages/ResearchAgentPage.tsx';
 import AgentBuilderListPage from './pages/agentBuilder/AgentBuilderListPage.tsx';
 import AgentBuilderEditPage from './pages/agentBuilder/AgentBuilderEditPage';
@@ -231,7 +233,7 @@ const routes: RouteObject[] = [
   legalRagEnabled
     ? {
         path: '/legal-rag',
-        element: <LegalRagPage />,
+        element: lawRestEnabled ? <LawWorkspace /> : <LegalRagPage />,
       }
     : null,
   researchAgentEnabled

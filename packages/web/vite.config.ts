@@ -9,6 +9,20 @@ import webfontDownload from 'vite-plugin-webfont-dl';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  server:
+    process.env.VITE_APP_LEGAL_RAG_TRANSPORT === 'local-rest'
+      ? {
+          host: '127.0.0.1',
+          strictPort: true,
+          proxy: {
+            '/law-api': {
+              target: 'http://127.0.0.1:18000',
+              changeOrigin: true,
+              rewrite: (path: string) => path.replace(/^\/law-api/, ''),
+            },
+          },
+        }
+      : undefined,
   build: {
     rollupOptions: {
       output: {

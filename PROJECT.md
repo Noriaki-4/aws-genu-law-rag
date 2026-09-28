@@ -1,5 +1,12 @@
 # aws-genu-law-rag
 
+## 法令検索v2への移行
+
+GenUはv5.5.0を維持し、`local-rag-poc-law` v2.0.8へ専用画面はREST、Agent BuilderはMCPで接続する。
+`npm run web:dev:law-v2`でローカル限定のv2画面を起動できる。
+実装範囲・MCP検証・AWS移行の残件は[移行手順](docs/ja/LAW_V2.md)を参照。
+以下は維持している旧AWS接続の説明であり、v2のAWS配置が完成したことを意味しない。
+
 `local-rag-poc-law-aws`の利用者向けフロントエンドで、ローカル版のStreamlitをGenUへ置き換えるための
 プロジェクトである。初期実装は公式GenU `v5.5.0`を基準とする。
 

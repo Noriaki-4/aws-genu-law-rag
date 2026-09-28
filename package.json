@@ -10,6 +10,7 @@
     "web:devww": "powershell ./web_devw_win.ps1",
     "web:dev": "VITE_APP_VERSION=${npm_package_version} npm -w packages/web run dev",
     "web:preview:legal-rag": "VITE_APP_VERSION=${npm_package_version} npm -w packages/web run dev -- --mode legal-rag-preview --host 127.0.0.1",
+    "web:dev:law-v2": "VITE_APP_VERSION=${npm_package_version} VITE_APP_LEGAL_RAG_TRANSPORT=local-rest npm -w packages/web run dev -- --mode legal-rag-preview --host 127.0.0.1 --port 18505 --strictPort",
     "web:build": "VITE_APP_VERSION=${npm_package_version} npm -w packages/web run build --",
     "web:build:analyze": "VITE_APP_VERSION=${npm_package_version} npm -w packages/web run build -- --mode analyze",
     "web:lint": "npm -w packages/web run lint",

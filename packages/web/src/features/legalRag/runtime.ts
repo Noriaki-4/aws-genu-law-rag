@@ -1,4 +1,5 @@
 import { AgentCoreConfiguration } from 'generative-ai-use-cases';
+import { lawRestEnabled } from './restConfig';
 
 export const LEGAL_RAG_RUNTIME_NAME = 'LocalRagLawPoc';
 
@@ -34,4 +35,5 @@ export const configuredLegalRagRuntime = selectLegalRagRuntime(
   parseExternalRuntimes(import.meta.env.VITE_APP_AGENT_CORE_EXTERNAL_RUNTIMES)
 );
 
-export const legalRagEnabled = configuredLegalRagRuntime !== undefined;
+export const legalRagEnabled =
+  lawRestEnabled || configuredLegalRagRuntime !== undefined;

@@ -905,6 +905,23 @@ legal_rag:
     ready: This question is ready for research. Here is a version that may improve search accuracy.
     ready_instruction: You can also keep your original question and send it as written.
     recommended_question: Suggested question
+  resident_library:
+    apply: 'Use {{id}}'
+    choose_municipality: Select a municipal dataset. Answers are not guaranteed for programs outside its coverage.
+    count: '{{count}} questions'
+    empty: No matching questions.
+    hypothetical: 'Hypothetical amendment, not an enacted change to current law.'
+    level: Difficulty
+    level_0: All levels
+    level_1: 'Level 1: Source hints'
+    level_2: 'Level 2: Find the sources'
+    level_3: 'Level 3: Clarify missing conditions'
+    level_4: 'Level 4: National and municipal provisions'
+    level_5: 'Level 5: Hypothetical amendment impact'
+    municipality: 'Selected dataset: {{name}}'
+    notice: 14 resident-service questions from law v2. Original Japanese wording is inserted unchanged. Edit before sending. Selecting a question after an answer starts a fresh conversation. Check dataset coverage before use.
+    search: Keyword search
+    title: Resident-service question library
   runtime_not_configured: The AgentCore Runtime for Legal RAG is not configured. Contact your administrator.
   scope:
     field: Area
@@ -916,6 +933,54 @@ legal_rag:
     sources: Supported laws and materials
     title: Supported scope
   title: Legal RAG
+  workspace:
+    analysis: Analysis
+    analysis_error: Analysis could not be loaded. It may be disabled or the connection failed.
+    answer_questions: Copy questions to input
+    assistant: Answer
+    choose_dataset: Select a dataset
+    conflict: The conversation has changed. Review its latest state before sending.
+    connection_error: Could not reach the law API. Check the backend and connection settings.
+    conversation: Conversation
+    dataset: Dataset
+    dataset_label: '{{name}} ({{count}} documents) · {{id}}'
+    documents: Document relations
+    evidence: Evidence
+    evidence_count: 'View evidence for this statement ({{count}})'
+    find_document: Find a document by title
+    history: Recent conversations (100)
+    loading: Loading…
+    local_notice: Local single-user verification only. Authentication and conversation ownership are not implemented. Answers do not establish legal conclusions; seek professional review where needed.
+    missing_evidence: Some evidence is no longer retained in this conversation. Check the run records in Analysis.
+    new_conversation: New conversation
+    no_relations: No registered relations. This does not prove that no relations exist.
+    pending_request: The previous submission is unconfirmed. Restore it and retry with the same content.
+    processing: Research in progress. Checking results automatically.
+    question: Question or follow-up response
+    questions: Questions for you
+    relation_type: '→ {{type}} →'
+    relations_notice: Registered document relations do not establish the applicability of individual provisions.
+    reload: Reload
+    requirements: View saved requirements
+    requirements_status: 'Requirements status: {{status}}'
+    restore_pending: Restore unconfirmed submission
+    saved_document: Open the stored source
+    select_evidence: Select an evidence button in the answer to read the source.
+    send: Send
+    source: Open publisher source
+    sql_notice: Readiness is not permission to execute SQL. This page does not generate or execute SQL.
+    sql_ready: 'SQL readiness: {{value}}'
+    start: Select a dataset and ask a question. The law backend handles clarification and follow-up questions.
+    status_completed: Completed
+    status_failed: Failed
+    status_incomplete: Unresolved issues
+    status_interrupted: Interrupted
+    status_needs_input: Needs input
+    status_no_candidates: No candidate documents
+    status_queued: Queued
+    status_running: Running
+    user: Question
+    views: Views
 mcp_chat:
   loading_message: Connecting to MCP server. This may take some time. Please wait...
   title: MCP Chat
