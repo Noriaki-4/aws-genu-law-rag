@@ -1,11 +1,21 @@
 # GenU 5.5・法令検索v2 接続検証
 
 確認日: 2026-09-28。GenU v5.5.0、Node.js 22.23.2。
-ブランチ: `codex/law-v2-integration`。法令バックエンドv2.0.8。
+ブランチ: `feature/law-v2-integration`。法令バックエンドv2.0.8。
+
+## 旧法令AgentCore接続の削除（2026-09-29）
+
+旧法令AgentCore Runtime向けの専用画面、Runtime ARN・CDK環境設定、独自stream event、
+citation永続化、金融商品取引法の旧質問集と専用テストを削除した。公式GenUが提供する汎用の
+AgentCore・Agent Builder機能は変更していない。
+
+削除後にWebテスト16ファイル・295件、Web lint、TypeScript検査、production build、
+CDK build、CDK test 6 suites・35件・snapshot 15件、`git diff --check`へ合格した。
+`v5.5.0`との差分に旧Runtime名、ARN、独自AgentCore eventが残っていないことも確認した。
 
 ## 自動検証
 
-- Webテスト: 24ファイル・316件通過（今回追加17件）。
+- 接続実装時点のWebテスト: 24ファイル・316件通過（今回追加17件）。
 - Web lint、TypeScript検査、production build、`git diff --check`: 通過。
 - 既存のReact Router警告・一部テストのact警告、buildの大きなchunk等の警告は残る。
 - 本番判定・loopback制限、認証情報を送らないAPI、IDのエンコードを検証。

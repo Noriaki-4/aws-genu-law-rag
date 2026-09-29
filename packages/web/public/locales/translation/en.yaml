@@ -839,72 +839,6 @@ language:
   vi: Vietnamese
   zh: Chinese
 legal_rag:
-  citations:
-    content_unit_id: Content Unit ID (chunk ID)
-    page: p.{{page}}
-    source: Open source document
-    text: Cited text
-    text_unavailable: The cited text was not returned.
-    title: Supporting provisions and materials ({{count}})
-  description: Search across Japanese laws, subordinate regulations, and administrative guidance, and answer with supporting sources.
-  input_description: Responses can take up to approximately 10 minutes.
-  input_placeholder: Ask a question about the supported Japanese laws
-  question_library:
-    all: All
-    apply: Use in question box
-    expected_sources: Expected sources
-    filter_label: '{{label}} ({{count}})'
-    intro: Browse {{count}} Level 1 and Level 2 questions and place your selection directly in the question box.
-    legal_as_of: Law current as of
-    level: Level {{level}}
-    no_results: No questions match the selected filters.
-    open: Open question library ({{count}})
-    question_count: '{{count}} questions'
-    questions:
-      restricted_stock_compensation:
-        expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Disclosure Ordinance
-        question: If a listed company grants its own shares to officers or employees of the company or its subsidiaries as compensation, subject to transfer restrictions for a certain period, is a securities offering or secondary distribution filing required? Explain the possible exemption conditions, eligible recipients, and how long the transfer restrictions must remain.
-        title: Granting restricted stock to officers and employees
-      small_number_private_placement:
-        expected_sources: Financial Instruments and Exchange Act Enforcement Order (Article 1-5)
-        question: When soliciting subscriptions for newly issued company shares, fewer than how many persons qualifies as a small-number private placement?
-        title: Number threshold for a small-number private placement
-      tender_offer_notice_amendment_impact:
-        expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Tender Offer Ordinance
-        question: Assume that the rules on the method or required content of the tender offer commencement notice under Article 27-3 of the Financial Instruments and Exchange Act are amended. Identify provisions in the current dataset's Cabinet Order and Cabinet Office Ordinance that may need review and explain whether each implements the notice method or notice content.
-        title: Amendment impact on a tender offer commencement notice
-      tender_offer_notice_policy:
-        expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Tender Offer Ordinance
-        question: Our company plans an internal policy of ordinarily publishing tender offer commencement notices electronically and including only the purchase price and period. Distinguish what the company may choose from what the law does not permit it to omit and identify necessary corrections.
-        title: Internal policy for tender offer commencement notices
-      tender_offer_share_acquisition:
-        expected_sources: Financial Instruments and Exchange Act Enforcement Order (Article 9-3) and Tender Offer Ordinance (Article 9)
-        question: Can a tender offer commencement notice be published electronically?
-        title: Electronic publication of a tender offer commencement notice
-      tender_offer_small_holder_exemption:
-        expected_sources: Financial Instruments and Exchange Act, Enforcement Order, and Tender Offer Ordinance
-        question: When a listed target company's securities have only a small number of owners, explain in hierarchical order the provision that generally requires a tender offer, the provision establishing an exemption, and the provision specifying the conditions for a small number of owners and unanimous owner consent.
-        title: Tender offer exemption for a small number of owners
-      tender_offer_special_related_parties:
-        expected_sources: Financial Instruments and Exchange Act and Tender Offer Ordinance
-        question: Article 2-5(2) of the Tender Offer Ordinance provides situations in which another person's ownership percentage is added to the purchaser's percentage. Who qualifies as a person whose percentage must be added? Include the source definition in your explanation.
-        title: Definition of specially related parties used for the small-owner exemption
-    reference_details: Expected sources and law date
-    search_placeholder: Search titles, questions, and expected sources
-    title: Cross-law question library
-    topic: Area
-    topics:
-      all: All areas
-      finance: Financial instruments
-  readiness:
-    apply: Use this revised question
-    clarification_recommended: To preserve search accuracy, consider adding or clarifying the following point in your question.
-    edit_instruction: Add the missing details to the question box, then select "Refine question" again.
-    error: Failed to refine the question
-    organize: Refine question
-    ready: This question is ready for research. Here is a version that may improve search accuracy.
-    ready_instruction: You can also keep your original question and send it as written.
-    recommended_question: Suggested question
   resident_library:
     apply: 'Use {{id}}'
     choose_municipality: Select a municipal dataset. Answers are not guaranteed for programs outside its coverage.
@@ -922,16 +856,6 @@ legal_rag:
     notice: 14 resident-service questions from law v2. Original Japanese wording is inserted unchanged. Edit before sending. Selecting a question after an answer starts a fresh conversation. Check dataset coverage before use.
     search: Keyword search
     title: Resident-service question library
-  runtime_not_configured: The AgentCore Runtime for Legal RAG is not configured. Contact your administrator.
-  scope:
-    field: Area
-    intro: Questions are limited to the loaded laws and guidance. Out-of-scope questions may have no citations or lower-confidence answers.
-    rows:
-      finance:
-        field: Financial instruments
-        sources: Financial Instruments and Exchange Act, enforcement order, related ordinances, and supervisory, disclosure, and tender-offer guidance
-    sources: Supported laws and materials
-    title: Supported scope
   title: Legal RAG
   workspace:
     analysis: Analysis

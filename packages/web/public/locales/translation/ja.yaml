@@ -684,72 +684,6 @@ language:
   vi: ベトナム語
   zh: 中国語
 legal_rag:
-  citations:
-    content_unit_id: Content Unit ID（チャンクID）
-    page: p.{{page}}
-    source: 原資料を開く
-    text: 本文
-    text_unavailable: 本文は取得できませんでした。
-    title: 根拠として引用した条文・資料（{{count}}件）
-  description: 複数の法令・下位法令・行政ガイドラインを横断検索し、根拠を示して回答します。
-  input_description: 回答には最大10分程度かかります。
-  input_placeholder: 法令について質問してください
-  question_library:
-    all: すべて
-    apply: 入力欄へ反映
-    expected_sources: 想定する参照先
-    filter_label: '{{label}}（{{count}}）'
-    intro: Lv.1・2の質問を{{count}}問用意しています。選んだ質問を入力欄へ直接反映できます。
-    legal_as_of: 法令時点
-    level: Lv.{{level}}
-    no_results: 条件に一致する質問がありません。
-    open: 質問集を開く（{{count}}問）
-    question_count: '{{count}}問'
-    questions:
-      restricted_stock_compensation:
-        expected_sources: 金融商品取引法＋施行令＋開示府令
-        question: 上場会社が自社や子会社の役職員へ、譲渡を一定期間制限した自社株式を報酬として交付する場合、有価証券の募集・売出しの届出は必要ですか。届出が不要となり得る条件、対象にできる人の範囲、譲渡制限をいつまで課す必要があるかも含めて説明してください。
-        title: 役職員への譲渡制限付株式の交付
-      small_number_private_placement:
-        expected_sources: 金融商品取引法施行令（第1条の5）
-        question: 新しく発行する自社株式を勧誘する場合、少人数私募とされるのは何名未満ですか。
-        title: 少人数私募の人数基準
-      tender_offer_notice_amendment_impact:
-        expected_sources: 金融商品取引法＋施行令＋公開買付府令
-        question: 金融商品取引法第二十七条の三の公開買付開始公告について、公告方法又は公告事項に関する規定が改正されたと仮定します。現在のデータセットの中から、改正内容によって見直しが必要になる可能性がある政令・内閣府令の条文を挙げ、それぞれが公告方法と公告事項のどちらを具体化しているか説明してください。
-        title: 公開買付開始公告の改正影響
-      tender_offer_notice_policy:
-        expected_sources: 金融商品取引法＋施行令＋公開買付府令
-        question: 当社は、公開買付開始公告を原則として電子公告で行い、公告には買付け等の価格と期間だけを掲載するという社内方針を作ろうとしています。この方針について、会社が選択できる部分と法令上省略できない部分を区別し、修正が必要な点を説明してください。
-        title: 公開買付開始公告の社内方針
-      tender_offer_share_acquisition:
-        expected_sources: 金融商品取引法施行令（第9条の3）＋公開買付府令（第9条）
-        question: 公開買付開始公告は、電子公告で行えますか。
-        title: 公開買付開始公告の電子公告
-      tender_offer_small_holder_exemption:
-        expected_sources: 金融商品取引法＋施行令＋公開買付府令
-        question: 買付者は当社、株券等の発行者は当社とは別の上場会社（対象会社）です。対象会社の株券等の所有者が少数である場合について、公開買付けが原則として必要となる規定、適用除外を設ける規定、少数所有者と全所有者同意の具体的条件を定める規定を上位から順に説明してください。
-        title: 少数所有者の場合の公開買付けの適用除外
-      tender_offer_special_related_parties:
-        expected_sources: 金融商品取引法＋公開買付府令
-        question: 公開買付府令第2条の5第2項では、買付者の所有割合に、買付者以外の者の所有割合を加えて判定する場面があります。加算対象となる者は、法令上どのような者ですか。定義元も含めて説明してください。
-        title: 少数所有者の適用除外で使う特別関係者の定義
-    reference_details: 想定参照先と法令時点
-    search_placeholder: タイトル・質問文・参照先を検索
-    title: 法令横断の質問集
-    topic: 分野
-    topics:
-      all: すべての分野
-      finance: 金融商品取引法
-  readiness:
-    apply: この質問案を入力欄へ反映
-    clarification_recommended: 検索精度を保つため、次の点を質問文に追記または明確化することを推奨します。
-    edit_instruction: 不足している内容を質問入力欄へ追加し、もう一度「質問を整理する」を押してください。
-    error: 質問の整理に失敗しました
-    organize: 質問を整理する
-    ready: この質問は調査を開始できます。下記は検索精度を高める質問文案です。
-    ready_instruction: 質問案を使わず、元の質問のまま送信することもできます。
-    recommended_question: 検索精度を高める質問案
   resident_library:
     apply: '{{id}}を入力欄に入れる'
     choose_municipality: 自治体の資料セットを選択してください。未収録の制度に対する回答は保証されません。
@@ -767,16 +701,6 @@ legal_rag:
     notice: 法令検索v2の住民系業務の質問14問です。日本語の原文を変更せず入力欄へ入れます。編集してから送信してください。回答済みの会話では新しい会話に切り替わります。資料セットへの収録範囲を確認してお使いください。
     search: キーワード検索
     title: 住民系業務の質問集
-  runtime_not_configured: 法令RAG用のAgentCore Runtimeが設定されていません。管理者に連絡してください。
-  scope:
-    field: 分野
-    intro: 質問は投入済みの法令・資料に限られます。範囲外の質問では、引用が見つからないか確度が低くなる場合があります。
-    rows:
-      finance:
-        field: 金融商品取引法
-        sources: 金融商品取引法、施行令、関連府省令、監督・開示・公開買付けガイドライン
-    sources: 対応している法令・資料
-    title: 回答できる範囲
   title: 法令RAG
   workspace:
     analysis: 分析

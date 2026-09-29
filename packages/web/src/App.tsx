@@ -39,7 +39,7 @@ import useScreen from './hooks/useScreen';
 import { optimizePromptEnabled } from './hooks/useOptimizePrompt';
 import useUseCases from './hooks/useUseCases';
 import { useTranslation } from 'react-i18next';
-import { legalRagEnabled } from './features/legalRag/runtime';
+import { lawRestEnabled } from './features/legalRag/restConfig';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
 const ragKnowledgeBaseEnabled: boolean =
@@ -156,7 +156,7 @@ const App: React.FC = () => {
           sub: 'Experimental',
         }
       : null,
-    legalRagEnabled
+    lawRestEnabled
       ? {
           label: t('legal_rag.title'),
           to: '/legal-rag',

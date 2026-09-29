@@ -4,7 +4,6 @@
 
 import {
   ExtraData,
-  LegalRagCitation,
   Metadata,
   StrandsContentBlock,
   StrandsMessage,
@@ -392,12 +391,9 @@ export class StrandsStreamProcessor {
   /**
    * Process a streaming event and return formatted content
    */
-  processEvent(eventText: string): {
-    text: string;
-    trace?: string;
-    metadata?: Metadata;
-    legalRagCitations?: LegalRagCitation[];
-  } | null {
+  processEvent(
+    eventText: string
+  ): { text: string; trace?: string; metadata?: Metadata } | null {
     try {
       const parsedEvent = JSON.parse(eventText);
       const streamEvent = parsedEvent.event as StrandsStreamEvent;
@@ -538,13 +534,6 @@ export class StrandsStreamProcessor {
                 streamEvent.metadata.usage.cacheWriteInputTokens,
             },
           },
-        };
-      }
-
-      if (streamEvent.legalRagCitations) {
-        return {
-          text: '',
-          legalRagCitations: streamEvent.legalRagCitations.citations,
         };
       }
 

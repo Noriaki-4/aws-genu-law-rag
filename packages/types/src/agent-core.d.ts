@@ -1,4 +1,4 @@
-import { LegalRagCitation, Model } from './message';
+import { Model } from './message';
 
 export type AgentCoreConfiguration = {
   name: string;
@@ -269,17 +269,12 @@ export type StrandsRedactContentEvent = {
   redactAssistantContentMessage?: string;
 };
 
-export type StrandsLegalRagCitationsEvent = {
-  citations: LegalRagCitation[];
-};
-
-// Main stream event type (Strands StreamEvent plus project-specific events)
+// Main stream event type (matches the Python StreamEvent TypedDict)
 export type StrandsStreamEvent = {
   contentBlockDelta?: StrandsContentBlockDeltaEvent;
   contentBlockStart?: StrandsContentBlockStartEvent;
   contentBlockStop?: StrandsContentBlockStopEvent;
   internalServerException?: StrandsExceptionEvent;
-  legalRagCitations?: StrandsLegalRagCitationsEvent;
   messageStart?: StrandsMessageStartEvent;
   messageStop?: StrandsMessageStopEvent;
   metadata?: StrandsMetadataEvent;
@@ -296,7 +291,6 @@ export type StrandsStreamEventType =
   | 'contentBlockStart'
   | 'contentBlockStop'
   | 'internalServerException'
-  | 'legalRagCitations'
   | 'messageStart'
   | 'messageStop'
   | 'metadata'

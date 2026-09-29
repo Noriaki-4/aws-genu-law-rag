@@ -2,10 +2,10 @@
 
 ## Project boundary
 
-- このリポジトリは法令検索のGenUフロントエンドである。新しい接続の正本は`local-rag-poc-law` v2.0.8。旧`local-rag-poc-law-aws`接続は移行検証中も維持する。
+- このリポジトリは法令検索のGenUフロントエンドである。接続先の正本は`local-rag-poc-law` v2.0.8とする。
 - upstreamの基準は`UPSTREAM.md`に記録した公式GenU `v5.5.0`とする。
 - `aws-genu-sqlbot`からsource、設定、commitを移植しない。参考情報と実装の由来を混在させない。
-- backendの検索・Graph・LLM処理を再実装しない。v2は専用画面からREST、Agent BuilderからMCPを使う。旧画面は既存AgentCore Runtime契約を維持する。段階と安全境界は`docs/ja/LAW_V2.md`を参照。
+- backendの検索・Graph・LLM処理を再実装しない。専用画面からREST、Agent BuilderからMCPを使う。段階と安全境界は`docs/ja/LAW_V2.md`を参照。
 
 ## Changes
 
@@ -20,4 +20,4 @@
 
 - Node.js 22系を使用し、依存関係は`package-lock.json`と`npm ci`で再現する。
 - 変更範囲に応じてlint、test、Web build、CDK build・test・synthを実行する。
-- AgentCore連携変更ではrequest、event stream、citation、利用者向けerrorの表示を確認する。
+- 法令バックエンド連携変更ではrequest、処理状態、citation、利用者向けerrorの表示を確認する。

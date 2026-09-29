@@ -61,18 +61,12 @@ const useAgentCoreApi = (id: string) => {
       const processed = processor.processEvent(eventText);
 
       if (processed) {
-        if (
-          processed.text ||
-          processed.trace ||
-          processed.metadata ||
-          processed.legalRagCitations
-        ) {
+        if (processed.text || processed.trace || processed.metadata) {
           addChunkToAssistantMessage(
             processed.text || '',
             processed.trace || undefined,
             model,
-            processed.metadata,
-            processed.legalRagCitations
+            processed.metadata
           );
         }
       }

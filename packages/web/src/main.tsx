@@ -33,7 +33,6 @@ import VoiceChatPage from './pages/VoiceChatPage';
 import McpChatPage from './pages/McpChatPage';
 import AgentCorePage from './pages/AgentCorePage.tsx';
 import AgentCoreListPage from './pages/AgentCoreListPage.tsx';
-import LegalRagPage from './pages/LegalRagPage.tsx';
 import LawWorkspace from './features/legalRag/LawWorkspace';
 import { lawRestEnabled } from './features/legalRag/restConfig';
 import ResearchAgentPage from './pages/ResearchAgentPage.tsx';
@@ -53,7 +52,6 @@ import GenerateDiagramPage from './pages/GenerateDiagramPage.tsx';
 import WriterPage from './pages/WriterPage.tsx';
 import useUseCases from './hooks/useUseCases';
 import { Toaster } from 'sonner';
-import { legalRagEnabled } from './features/legalRag/runtime';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
 const ragKnowledgeBaseEnabled: boolean =
@@ -230,10 +228,10 @@ const routes: RouteObject[] = [
         element: <AgentCorePage />,
       }
     : null,
-  legalRagEnabled
+  lawRestEnabled
     ? {
         path: '/legal-rag',
-        element: lawRestEnabled ? <LawWorkspace /> : <LegalRagPage />,
+        element: <LawWorkspace />,
       }
     : null,
   researchAgentEnabled
