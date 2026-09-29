@@ -26,6 +26,8 @@ import { ComputeType } from 'aws-cdk-lib/aws-codebuild';
 
 export interface WebProps {
   readonly apiEndpointUrl: string;
+  readonly legalRagEndpoint?: string | null;
+  readonly legalRagDatasetIds?: string[];
   readonly userPoolId: string;
   readonly userPoolClientId: string;
   readonly idPoolId: string;
@@ -261,6 +263,10 @@ export class Web extends Construct {
       buildEnvironment: {
         NODE_OPTIONS: '--max-old-space-size=15000', // Memory for CodeBuild at deployment
         VITE_APP_API_ENDPOINT: props.apiEndpointUrl,
+        VITE_APP_LEGAL_RAG_ENDPOINT: props.legalRagEndpoint ?? '',
+        VITE_APP_LEGAL_RAG_DATASET_IDS: JSON.stringify(
+          props.legalRagDatasetIds ?? []
+        ),
         VITE_APP_REGION: Stack.of(this).region,
         VITE_APP_USER_POOL_ID: props.userPoolId,
         VITE_APP_USER_POOL_CLIENT_ID: props.userPoolClientId,

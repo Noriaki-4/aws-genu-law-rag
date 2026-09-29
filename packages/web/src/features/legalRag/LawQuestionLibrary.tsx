@@ -1,89 +1,102 @@
 import { useState } from 'react';
-import { Dialog } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { filterResidentQuestions } from './residentQuestions';
 
 type Props = {
-  open: boolean;
   disabled: boolean;
   municipality: string;
-  onClose: () => void;
   onSelect: (question: string) => void;
 };
 
+const levels = [1, 2, 3, 4, 5] as const;
+
 export default function LawQuestionLibrary({
-  open,
   disabled,
   municipality,
-  onClose,
   onSelect,
 }: Props) {
   const { t } = useTranslation();
-  const [level, setLevel] = useState(0);
   const [query, setQuery] = useState('');
-  const questions = filterResidentQuestions(level, query);
+  const questions = filterResidentQuestions(0, query);
   return (
-    <Dialog open={open} onClose={onClose} className="relative z-50">
-      <div className="bg-aws-squid-ink/60 fixed inset-0" aria-hidden="true" />
-      <div className="fixed inset-0 overflow-y-auto p-4">
-        <div className="flex min-h-full items-center justify-center">
-          <Dialog.Panel className="text-aws-font-color w-full max-w-5xl rounded-xl bg-white p-5 shadow-xl">
-            <div className="flex items-start justify-between gap-4">
-              <Dialog.Title className="text-xl font-semibold">
-                {t('legal_rag.resident_library.title')}
-              </Dialog.Title>
-              <button className="rounded border px-3 py-1" onClick={onClose}>
-                {t('common.close')}
-              </button>
-            </div>
-            <Dialog.Description className="my-3 text-sm">
-              {t('legal_rag.resident_library.notice')}
-            </Dialog.Description>
-            <p className="mb-3 text-sm">
-              {municipality
-                ? t('legal_rag.resident_library.municipality', {
-                    name: municipality,
-                  })
-                : t('legal_rag.resident_library.choose_municipality')}
-            </p>
-            <div className="mb-4 grid gap-3 sm:grid-cols-2">
-              <label>
-                {t('legal_rag.resident_library.level')}
-                <select
-                  className="mt-1 w-full rounded border p-2"
-                  value={level}
-                  onChange={(e) => setLevel(Number(e.target.value))}>
-                  {[0, 1, 2, 3, 4, 5].map((value) => (
-                    <option key={value} value={value}>
-                      {t(`legal_rag.resident_library.level_${value}`)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                {t('legal_rag.resident_library.search')}
-                <input
-                  className="mt-1 w-full rounded border p-2"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-              </label>
-            </div>
-            <p className="mb-3 text-sm">
+    <section className="mx-auto max-w-6xl p-5 md:p-9">
+      <h2 className="text-xl font-semibold">
+        {t('legal_rag.resident_library.title')}
+      </h2>
+      <p className="mt-3 text-sm leading-relaxed">
+        {t('legal_rag.resident_library.notice')}
+      </p>
+      <p className="mt-3 text-sm">
+        {municipality
+          ? t('legal_rag.resident_library.municipality', {
+              name: municipality,
+            })
+          : t('legal_rag.resident_library.choose_municipality')}
+      </p>
+      <label className="mt-5 block text-sm font-semibold">
+        {t('legal_rag.resident_library.search')}
+        <input
+          className="border-aws-font-color/20 mt-2 w-full rounded-lg border bg-white p-3 font-normal"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </label>
+      <nav
+        className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-5"
+        aria-label={t('legal_rag.resident_library.level_index')}>
+        {levels.map((level) => (
+          <a
+            className="border-aws-font-color/20 hover:border-aws-sky hover:bg-aws-sky/10 rounded-lg border bg-white p-4 transition-colors"
+            href={`#question-level-${level}`}
+            key={level}>
+            <strong className="block text-sm">
+              {t('legal_rag.resident_library.level_badge', { level })}
+            </strong>
+            <span className="mt-1 block text-sm">
+              {t(`legal_rag.resident_library.level_${level}_title`)}
+            </span>
+            <span className="text-aws-font-color/70 mt-2 block text-xs">
               {t('legal_rag.resident_library.count', {
-                count: questions.length,
+                count: questions.filter((q) => q.level === level).length,
               })}
-            </p>
-            {questions.length === 0 && (
-              <p>{t('legal_rag.resident_library.empty')}</p>
-            )}
-            <div className="grid gap-4 md:grid-cols-2">
-              {questions.map((q) => (
+            </span>
+          </a>
+        ))}
+      </nav>
+      {questions.length === 0 && (
+        <p className="mt-6">{t('legal_rag.resident_library.empty')}</p>
+      )}
+      {levels.map((level) => {
+        const levelQuestions = questions.filter((q) => q.level === level);
+        if (levelQuestions.length === 0) return null;
+        return (
+          <section
+            className="mt-10 scroll-mt-6"
+            id={`question-level-${level}`}
+            key={level}
+            aria-labelledby={`question-level-title-${level}`}>
+            <div className="flex items-start gap-4">
+              <span className="bg-aws-sky rounded px-3 py-1 text-xs font-semibold text-white">
+                {t('legal_rag.resident_library.level_badge', { level })}
+              </span>
+              <div>
+                <h3
+                  className="text-lg font-semibold"
+                  id={`question-level-title-${level}`}>
+                  {t(`legal_rag.resident_library.level_${level}_title`)}
+                </h3>
+                <p className="text-aws-font-color/70 mt-1 text-sm">
+                  {t(`legal_rag.resident_library.level_${level}_description`)}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              {levelQuestions.map((q) => (
                 <article
                   key={q.id}
-                  className="border-aws-font-color/20 rounded-xl border p-4">
+                  className="border-aws-font-color/20 rounded-lg border bg-white p-5 shadow-sm">
                   <p className="text-aws-font-color/70 text-sm">{q.id}</p>
-                  <h3 className="my-2 font-semibold">{q.title}</h3>
+                  <h4 className="my-2 font-semibold">{q.title}</h4>
                   {q.hypothetical && (
                     <p className="bg-aws-smile/10 mb-2 rounded p-2 text-sm">
                       {t('legal_rag.resident_library.hypothetical')}
@@ -93,20 +106,17 @@ export default function LawQuestionLibrary({
                     {q.question}
                   </p>
                   <button
-                    className="bg-aws-squid-ink mt-3 rounded px-3 py-2 text-sm text-white disabled:opacity-40"
+                    className="bg-aws-smile border-aws-smile mt-4 rounded-lg border px-3 py-2 text-sm text-white hover:brightness-75 disabled:opacity-40"
                     disabled={disabled || !municipality}
-                    onClick={() => {
-                      onSelect(q.question);
-                      onClose();
-                    }}>
+                    onClick={() => onSelect(q.question)}>
                     {t('legal_rag.resident_library.apply', { id: q.id })}
                   </button>
                 </article>
               ))}
             </div>
-          </Dialog.Panel>
-        </div>
-      </div>
-    </Dialog>
+          </section>
+        );
+      })}
+    </section>
   );
 }

@@ -337,6 +337,8 @@ export class GenerativeAiUseCasesStack extends Stack {
         params.samlCognitoFederatedIdentityProviderName,
       // Backend
       apiEndpointUrl: api.api.url,
+      legalRagEndpoint: params.legalRagEndpoint,
+      legalRagDatasetIds: params.legalRagDatasetIds,
       predictStreamFunctionArn: api.predictStreamFunction.functionArn,
       ragEnabled: params.ragEnabled,
       ragKnowledgeBaseEnabled: params.ragKnowledgeBaseEnabled,

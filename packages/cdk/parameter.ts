@@ -23,6 +23,25 @@ const envs: Record<string, Partial<StackInput>> = {
   // },
   dev: {
     // Parameters for development environment
+    legalRagEndpoint:
+      'https://h1aeon1axc.execute-api.ap-northeast-1.amazonaws.com',
+    legalRagDatasetIds: [
+      'ds-525fc301de3e54ecb868fdd41a329bbfc97135b1309202e1856b6ba1df717cd0',
+      'ds-a0ef00eb3843023d6121613a647f5907272141f6381d8bcbbdaea3a178a3593a',
+      'ds-dfc86a33c77b557bdb31189116ca21af335552c2dd0ee88a94ce2fca048274ef',
+    ],
+    modelRegion: 'ap-northeast-1',
+    modelIds: [
+      'jp.anthropic.claude-sonnet-4-6',
+      'jp.anthropic.claude-opus-4-8',
+      'jp.anthropic.claude-opus-4-7',
+      'jp.anthropic.claude-haiku-4-5-20251001-v1:0',
+      'jp.amazon.nova-2-lite-v1:0',
+    ],
+    imageGenerationModelIds: ['amazon.nova-canvas-v1:0'],
+    videoGenerationModelIds: ['amazon.nova-reel-v1:0'],
+    speechToSpeechModelIds: ['amazon.nova-2-sonic-v1:0'],
+    agentFoundationModel: 'jp.anthropic.claude-sonnet-4-6',
   },
   staging: {
     // Parameters for staging environment

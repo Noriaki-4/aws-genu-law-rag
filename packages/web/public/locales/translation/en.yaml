@@ -839,6 +839,64 @@ language:
   vi: Vietnamese
   zh: Chinese
 legal_rag:
+  analysis:
+    before_decision: Before decision
+    call_summary: '{{stage}} · {{model}} · {{status}} · {{seconds}}s'
+    calls: LLM calls
+    cited: Cited in answer
+    context: Conversation context used for the decision
+    contract: 'Output contract: {{contract}} / attempt {{attempt}}'
+    current_run: 'Selected investigation run:'
+    decision: Decision contract
+    document_flow: Document flow
+    estimated_cost: Estimated cost
+    evidence: 'Evidence ({{count}})'
+    evidence_item: '{{title}} — {{location}}'
+    findings_usage: Findings and usage
+    full_or_missing: Full document or not recorded
+    full_read: Full read
+    full_read_reason: 'Reason for full read:'
+    has_more: ' (more available)'
+    input_locations: 'Locations sent to the LLM:'
+    input_tokens: Input tokens
+    instruction: Instruction
+    limitations: Retrieval limitations
+    lineage: Run lineage
+    matches: '{{count}} matches'
+    not_cited: Not cited in answer
+    not_recorded: Not recorded
+    notice: Viewing this page does not call an LLM. Missing records are not reconstructed.
+    open_run: Open run
+    output: Structured output
+    output_tokens: Output tokens
+    past_run: Open a past investigation run ID
+    past_run_placeholder: run ID
+    pinpoint: Pinpoint search
+    query_candidates: Query and candidates
+    raw: Raw call record
+    raw_call: Show raw call record
+    record: Call record
+    references: References
+    retrieval: Retrieval and reading steps
+    retrieval_path: Reference path and input sources
+    retrieval_summary: '{{document}} — {{mode}}{{reused}} · {{status}}'
+    retrieved_locations: 'Retrieved locations:'
+    reused: ' (reused)'
+    run: Investigation run
+    run_limitations: Run limitations
+    save_json: Save diagnostic JSON
+    save_zip: Save analysis ZIP
+    schema: Output schema
+    state_change: Decision state before and after
+    status: Status
+    timeline_item: '{{index}}. {{text}}'
+    timeline_notice: Select a question card to show the retrieval run for its answer. Normally, you do not need to enter a run ID.
+    timeline_status: '{{status}} · {{action}}'
+    title: Conversation → Decision → Retrieval → Evidence
+    total: 'Conversation total: {{calls}} LLM calls / estimated ${{cost}} ({{unknown}} unknown)'
+    unknown: Unknown
+    unknown_calls: '{{count}} calls with unknown pricing'
+    unresolved: Unresolved issues
   resident_library:
     apply: 'Use {{id}}'
     choose_municipality: Select a municipal dataset. Answers are not guaranteed for programs outside its coverage.
@@ -848,40 +906,85 @@ legal_rag:
     level: Difficulty
     level_0: All levels
     level_1: 'Level 1: Source hints'
+    level_1_description: Questions that identify an ordinance or rule and require checking one or two documents.
+    level_1_title: Questions with source hints
     level_2: 'Level 2: Find the sources'
+    level_2_description: Questions without document hints or that require moving between ordinances and rules.
+    level_2_title: Find the relevant sources
     level_3: 'Level 3: Clarify missing conditions'
+    level_3_description: Gather missing conditions from the user before assessing them against municipal rules.
+    level_3_title: Clarify missing conditions
     level_4: 'Level 4: National and municipal provisions'
-    level_5: 'Level 5: Hypothetical amendment impact'
+    level_4_description: Trace national laws, ordinances, and rules in both directions.
+    level_4_title: Connect national and municipal provisions
+    level_5: 'Level 5: Trace downstream impact'
+    level_5_description: Start from one upstream provision and identify downstream ordinance and rule provisions that require impact review.
+    level_5_title: Trace impact candidates from an upstream provision
+    level_badge: 'Level {{level}}'
+    level_index: Questions by difficulty
     municipality: 'Selected dataset: {{name}}'
     notice: 14 resident-service questions from law v2. Original Japanese wording is inserted unchanged. Edit before sending. Selecting a question after an answer starts a fresh conversation. Check dataset coverage before use.
     search: Keyword search
     title: Resident-service question library
-  title: Legal RAG
+  title: Legal Research
   workspace:
     analysis: Analysis
     analysis_error: Analysis could not be loaded. It may be disabled or the connection failed.
+    answer_label: 'Answer:'
     answer_questions: Copy questions to input
-    assistant: Answer
+    answer_template: Copy answer template to input
+    assistant: Research assistant
+    brand_subtitle: Conversations and evidence
     choose_dataset: Select a dataset
+    choose_from_library: Choose from the question library →
+    cited: Cited in answer
+    conclusion: Conclusion
     conflict: The conversation has changed. Review its latest state before sending.
     connection_error: Could not reach the law API. Check the backend and connection settings.
     conversation: Conversation
-    dataset: Dataset
-    dataset_label: '{{name}} ({{count}} documents) · {{id}}'
+    current_scope: Current research scope
+    dataset: Reference dataset
+    dataset_change_notice: Dataset changes take effect with the next message.
+    dataset_financial: Financial Instruments and Exchange Act and tender offer laws
+    dataset_label: '{{name}} ({{count}} documents)'
+    dataset_named_label: '{{name}} ({{count}} documents)'
+    dataset_nara: Nara resident-service ordinances and related national laws
+    dataset_narashino: Narashino resident-service ordinances and related national laws
+    dataset_unnamed: Other legal materials
+    decision_reason: 'Reason {{index}}'
+    decision_reasons: Reasons for the decision
     documents: Document relations
     evidence: Evidence
-    evidence_count: 'View evidence for this statement ({{count}})'
+    evidence_count: 'View evidence for this reason ({{count}})'
+    evidence_heading: Evidence and research conditions
+    evidence_items: '{{count}} items'
+    eyebrow: DOCUMENT RESEARCH
     find_document: Find a document by title
-    history: Recent conversations (100)
+    graph_depth: Relation depth
+    graph_depth_value: '{{depth}} level'
+    graph_document_details: Focus document summary, version, and constraints
+    graph_focus: Focus document
+    graph_omissions: Ingestion limitations
+    graph_summary: '{{documents}} documents / {{relations}} relations. Showing registered connections.'
+    header_analysis: Trace the research process.
+    header_conversation: Research with verifiable evidence.
+    header_documents: Explore document relationships.
+    header_library: Choose a question to investigate.
+    history: Recent conversations
+    input_note: Answers are based on the retrieved materials.
     loading: Loading…
-    local_notice: Local single-user verification only. Authentication and conversation ownership are not implemented. Answers do not establish legal conclusions; seek professional review where needed.
     missing_evidence: Some evidence is no longer retained in this conversation. Check the run records in Analysis.
-    new_conversation: New conversation
+    new_conversation: ＋ New conversation
     no_relations: No registered relations. This does not prove that no relations exist.
     pending_request: The previous submission is unconfirmed. Restore it and retry with the same content.
-    processing: Research in progress. Checking results automatically.
-    question: Question or follow-up response
+    processing: Research in progress. Your work remains saved if you close this page.
+    question: Question or additional conditions
+    question_placeholder: Continue here with follow-up questions or corrections.
     questions: Questions for you
+    questions_note: Provide the details needed for an individual assessment.
+    relation_hierarchy: Hierarchy
+    relation_related: Related
+    relation_source: Open relation source ↗
     relation_type: '→ {{type}} →'
     relations_notice: Registered document relations do not establish the applicability of individual provisions.
     reload: Reload
@@ -889,12 +992,13 @@ legal_rag:
     requirements_status: 'Requirements status: {{status}}'
     restore_pending: Restore unconfirmed submission
     saved_document: Open the stored source
-    select_evidence: Select an evidence button in the answer to read the source.
-    send: Send
+    select_evidence: Sources cited for each reason appear here. Choose “View evidence for this reason” in the answer.
+    selected_evidence: Evidence shown
+    send: Send →
     source: Open publisher source
     sql_notice: Readiness is not permission to execute SQL. This page does not generate or execute SQL.
     sql_ready: 'SQL readiness: {{value}}'
-    start: Select a dataset and ask a question. The law backend handles clarification and follow-up questions.
+    start: Start with what you want to investigate
     status_completed: Completed
     status_failed: Failed
     status_incomplete: Unresolved issues
@@ -903,8 +1007,9 @@ legal_rag:
     status_no_candidates: No candidate documents
     status_queued: Queued
     status_running: Running
-    user: Question
+    user: You
     views: Views
+    welcome_body: You can ask about a system or procedure even if you do not know the law’s name. The assistant will clarify what is needed while researching.
 mcp_chat:
   loading_message: Connecting to MCP server. This may take some time. Please wait...
   title: MCP Chat

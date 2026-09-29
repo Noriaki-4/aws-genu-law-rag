@@ -47,6 +47,12 @@ export type LawConversation = {
     runIds: string[];
   }[];
   evidence: LawEvidence[];
+  state?: {
+    scope?: {
+      conditions?: string[];
+      researchTask?: string;
+    };
+  };
 };
 export type LawTurn = {
   turnId: string;
@@ -74,10 +80,21 @@ export type LawToolResult = {
   evidence: LawEvidence[];
 };
 export type LawDataset = {
-  documents: { documentId: string; versionId: string; title: string }[];
+  documents: {
+    documentId: string;
+    versionId: string;
+    title: string;
+    summary?: string;
+    sourceUrl?: string;
+    lawId?: string | null;
+    omissions?: string[];
+    [key: string]: unknown;
+  }[];
   relations: {
     sourceId: string;
     targetId: string;
     relationType: string;
+    description?: string;
+    sourceUrl?: string;
   }[];
 };

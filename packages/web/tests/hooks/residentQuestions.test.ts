@@ -12,12 +12,19 @@ describe('resident question catalog', () => {
       [1, 2, 3, 4, 5].map((level) => filterResidentQuestions(level, '').length)
     ).toEqual([4, 4, 2, 2, 2]);
   });
-  test('preserves hypothetical amendment labels and source wording', () => {
+  test('preserves downstream impact questions and source wording', () => {
     const examples = filterResidentQuestions(5, '');
     expect(
       // Canonical Japanese catalog wording, not a translated UI label.
-      // eslint-disable-next-line i18nhelper/no-jp-string
-      examples.every((q) => q.hypothetical && q.question.startsWith('仮想改正'))
+      examples.every(
+        (q) =>
+          !q.hypothetical &&
+          /* eslint-disable i18nhelper/no-jp-string */
+          q.question.includes(
+            '影響確認が必要となる下流の自治体条例・規則の条文'
+          )
+        /* eslint-enable i18nhelper/no-jp-string */
+      )
     ).toBe(true);
     // eslint-disable-next-line i18nhelper/no-jp-string
     expect(filterResidentQuestions(1, '印鑑登録')).toHaveLength(2);

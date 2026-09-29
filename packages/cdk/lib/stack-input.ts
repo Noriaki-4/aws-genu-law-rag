@@ -14,6 +14,24 @@ const baseStackInputSchema = z.object({
   samlCognitoDomainName: z.string().nullish(),
   samlCognitoFederatedIdentityProviderName: z.string().nullish(),
   // Frontend
+  legalRagEndpoint: z
+    .string()
+    .url()
+    .refine((value) => {
+      const endpoint = new URL(value);
+      return (
+        endpoint.protocol === 'https:' &&
+        !endpoint.username &&
+        !endpoint.password &&
+        !endpoint.search &&
+        !endpoint.hash &&
+        endpoint.hostname.endsWith('.execute-api.ap-northeast-1.amazonaws.com')
+      );
+    }, 'legalRagEndpoint must be an ap-northeast-1 API Gateway HTTPS URL')
+    .nullish(),
+  legalRagDatasetIds: z
+    .array(z.string().regex(/^ds-[0-9a-f]{64}$/))
+    .default([]),
   hiddenUseCases: z
     .object({
       generate: z.boolean().optional(),

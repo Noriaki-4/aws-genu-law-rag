@@ -684,6 +684,64 @@ language:
   vi: ベトナム語
   zh: 中国語
 legal_rag:
+  analysis:
+    before_decision: 判断前
+    call_summary: '{{stage}} · {{model}} · {{status}} · {{seconds}}秒'
+    calls: LLM呼び出し
+    cited: 回答で引用
+    context: 判断に使った会話文脈
+    contract: '出力契約：{{contract}} / 試行 {{attempt}}'
+    current_run: 選択中の調査実行：
+    decision: 判断契約
+    document_flow: 文書フロー
+    estimated_cost: 概算コスト
+    evidence: '根拠（{{count}}件）'
+    evidence_item: '{{title}} — {{location}}'
+    findings_usage: 調査結果と使用量
+    full_or_missing: 全文または記録なし
+    full_read: 全文読解
+    full_read_reason: 全文読解の理由：
+    has_more: （続きあり）
+    input_locations: LLM入力箇所：
+    input_tokens: 入力トークン
+    instruction: 指示
+    limitations: 検索上の制約
+    lineage: 実行系譜
+    matches: '{{count}}件一致'
+    not_cited: 回答では未引用
+    not_recorded: 記録なし
+    notice: 閲覧ではLLMを呼び出しません。記録がない項目は復元しません。
+    open_run: 調査実行を開く
+    output: 構造化出力
+    output_tokens: 出力トークン
+    past_run: 過去の調査実行IDを開く
+    past_run_placeholder: run ID
+    pinpoint: 該当箇所検索
+    query_candidates: 検索語と候補
+    raw: 生の呼び出し記録
+    raw_call: 生の呼び出し記録を表示
+    record: 呼び出し記録
+    references: 参照関係
+    retrieval: 検索・読解ステップ
+    retrieval_path: 参照経路と入力元
+    retrieval_summary: '{{document}} — {{mode}}{{reused}} · {{status}}'
+    retrieved_locations: 取得箇所：
+    reused: （再利用）
+    run: 調査実行
+    run_limitations: 調査実行の制約
+    save_json: 診断JSONを保存
+    save_zip: 分析ZIPを保存
+    schema: 出力スキーマ
+    state_change: 判断状態の前後
+    status: 状態
+    timeline_item: '{{index}}. {{text}}'
+    timeline_notice: 質問カードを選ぶと、その回答に対応する検索実行記録を表示します。通常は検索実行IDを入力する必要はありません。
+    timeline_status: '{{status}} · {{action}}'
+    title: 会話 → 判断 → 検索 → 根拠
+    total: '会話全体：{{calls}}回のLLM呼び出し / 概算 ${{cost}}（料金不明 {{unknown}}件）'
+    unknown: 料金不明
+    unknown_calls: '料金不明 {{count}}件'
+    unresolved: 未解決事項
   resident_library:
     apply: '{{id}}を入力欄に入れる'
     choose_municipality: 自治体の資料セットを選択してください。未収録の制度に対する回答は保証されません。
@@ -693,40 +751,85 @@ legal_rag:
     level: 難易度
     level_0: すべての難易度
     level_1: レベル1：参照先のヒントがある
+    level_1_description: 質問文に条例・規則などの手がかりがあり、1〜2文書の確認が必要な質問です。
+    level_1_title: 参照先のヒントがある質問
     level_2: レベル2：参照先を探す
+    level_2_description: 文書のヒントがない質問や、条例と規則を行き来する質問です。
+    level_2_title: 参照先を自分で探す質問
     level_3: レベル3：不足する条件を確認する
+    level_3_description: 利用者への確認で条件をそろえ、自治体例規に基づいて個別に判断します。
+    level_3_title: 不足する条件を確認する質問
     level_4: レベル4：国法令と自治体例規をつなぐ
-    level_5: レベル5：仮定の法改正の影響を調べる
+    level_4_description: 国法令・条例・規則を、上流からも下流からもたどります。
+    level_4_title: 国法令と自治体例規をつなぐ
+    level_5: レベル5：上流条文から下流への影響を調べる
+    level_5_description: 上流法令の一つの条文を起点に、影響確認が必要な下流の条例・規則の条文を特定します。
+    level_5_title: 上流条文から影響候補をたどる
+    level_badge: 'レベル {{level}}'
+    level_index: 難易度別の質問
     municipality: '選択中の資料セット：{{name}}'
     notice: 法令検索v2の住民系業務の質問14問です。日本語の原文を変更せず入力欄へ入れます。編集してから送信してください。回答済みの会話では新しい会話に切り替わります。資料セットへの収録範囲を確認してお使いください。
     search: キーワード検索
     title: 住民系業務の質問集
-  title: 法令RAG
+  title: 法令調査
   workspace:
     analysis: 分析
     analysis_error: 分析情報を取得できませんでした。分析機能が無効か、接続に失敗しています。
+    answer_label: 回答：
     answer_questions: 質問を入力欄へ
-    assistant: 回答
+    answer_template: 回答用ひな型を入力欄へ
+    assistant: 調査アシスタント
+    brand_subtitle: 会話と根拠
     choose_dataset: 資料セットを選択してください
+    choose_from_library: 質問集から選ぶ →
+    cited: 回答で引用
+    conclusion: 結論
     conflict: 会話が更新されました。最新の内容を確認してから送信してください。
     connection_error: 法令APIに接続できませんでした。バックエンドの起動と接続設定を確認してください。
     conversation: 会話
-    dataset: 資料セット
-    dataset_label: '{{name}}（{{count}}文書） · {{id}}'
+    current_scope: 現在の調査内容
+    dataset: 参照する文書セット
+    dataset_change_notice: 文書セットの変更は次の送信から反映します。
+    dataset_financial: 金商法・公開買付関連法令
+    dataset_label: '{{name}}（{{count}}文書）'
+    dataset_named_label: '{{name}}（{{count}}文書）'
+    dataset_nara: 奈良市住民系例規・関連国法令
+    dataset_narashino: 習志野市住民系例規・関連国法令
+    dataset_unnamed: その他の法令資料
+    decision_reason: '判断の理由 {{index}}'
+    decision_reasons: 判断の理由
     documents: 文書体系
     evidence: 引用根拠
-    evidence_count: 'この記述の根拠を見る（{{count}}件）'
+    evidence_count: 'この理由の根拠を見る（{{count}}件）'
+    evidence_heading: 根拠・調査条件
+    evidence_items: '{{count}}件'
+    eyebrow: DOCUMENT RESEARCH
     find_document: 文書名で検索
-    history: 会話履歴（最新100件）
+    graph_depth: 表示する関係の範囲
+    graph_depth_value: '{{depth}}段階'
+    graph_document_details: 起点文書の概要・版・制約
+    graph_focus: 起点として見る文書
+    graph_omissions: 収録時の制約
+    graph_summary: '{{documents}}文書 / {{relations}}関係。登録済みの接続を表示します。'
+    header_analysis: 調査の経過をたどる。
+    header_conversation: 根拠を確かめながら、調べる。
+    header_documents: 文書のつながりを見る。
+    header_library: 質問を選んで、調べる。
+    history: 最近の会話
+    input_note: 回答は取得した資料に基づきます。
     loading: 読み込み中…
-    local_notice: ローカル単一利用者の検証モードです。認証・会話所有権は未対応です。回答は法的判断を確定せず、必要に応じて専門家に確認してください。
     missing_evidence: この会話に保持されていない根拠があります。分析画面の実行記録を確認してください。
-    new_conversation: 新しい会話
+    new_conversation: ＋ 新しい会話
     no_relations: 登録された関係はありません。関係の不存在を意味しません。
     pending_request: 前回の送信結果が未確認です。送信内容を復元して同じ内容で再送してください。
-    processing: 調査中です。自動で結果を確認しています。
-    question: 質問・追加の回答
+    processing: 調査しています。画面を閉じても記録は保存されます。
+    question: 質問・追加の条件
+    question_placeholder: 追加の質問や訂正も、ここから続けられます。
     questions: 確認したいこと
+    questions_note: 個別の判断に必要な点を教えてください。
+    relation_hierarchy: 上下関係
+    relation_related: 関連
+    relation_source: 関係の出典 ↗
     relation_type: '→ {{type}} →'
     relations_notice: 登録された文書間の関係です。個別条文の適用関係を保証しません。
     reload: 再読み込み
@@ -734,12 +837,13 @@ legal_rag:
     requirements_status: '要件生成状態：{{status}}'
     restore_pending: 未確認の送信内容を復元
     saved_document: 読解した保存原本を開く
-    select_evidence: 回答の根拠ボタンを押すと原文を表示します。
-    send: 送信
+    select_evidence: 判断の理由ごとに引用した原文を表示します。確認したい理由の「この理由の根拠を見る」を選んでください。
+    selected_evidence: 表示中の根拠
+    send: 送信する →
     source: 公開元を開く
     sql_notice: SQL準備状態は実行承認ではありません。この画面からSQLを生成・実行しません。
     sql_ready: 'SQL準備状態：{{value}}'
-    start: 資料セットを選んで質問してください。質問の整理・追加確認は法令バックエンドが行います。
+    start: 調べたいことから始めましょう
     status_completed: 完了
     status_failed: 処理失敗
     status_incomplete: 未確認事項あり
@@ -748,8 +852,9 @@ legal_rag:
     status_no_candidates: 対象資料なし
     status_queued: 順番待ち
     status_running: 調査中
-    user: 質問
+    user: あなた
     views: 表示の切り替え
+    welcome_body: 法令名が分からなくても、制度や手続きについて質問できます。必要な点を確認しながら調査します。
 mcp_chat:
   loading_message: MCP サーバーと接続しています。時間がかかる場合があります。そのまま待機してください...
   title: MCP チャット

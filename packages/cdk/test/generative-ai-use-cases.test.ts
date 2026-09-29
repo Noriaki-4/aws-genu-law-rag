@@ -315,4 +315,20 @@ describe('GenerativeAiUseCases', () => {
       })
     ).not.toThrow();
   });
+
+  test('legal RAG endpoint is limited to API Gateway in Tokyo', () => {
+    expect(() =>
+      stackInputSchema.parse({
+        ...stackInput,
+        legalRagEndpoint:
+          'https://api-id.execute-api.ap-northeast-1.amazonaws.com',
+      })
+    ).not.toThrow();
+    expect(() =>
+      stackInputSchema.parse({
+        ...stackInput,
+        legalRagEndpoint: 'https://api-id.execute-api.us-east-1.amazonaws.com',
+      })
+    ).toThrow();
+  });
 });

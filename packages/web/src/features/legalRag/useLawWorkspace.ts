@@ -8,6 +8,7 @@ import {
   LawTurn,
 } from 'generative-ai-use-cases';
 import useLawApi, { LawApiError } from '../../hooks/useLawApi';
+import { defaultLawDatasetId } from './restConfig';
 
 const pendingKey = (cid: string) => `law-v2:pending:${cid}`;
 
@@ -46,6 +47,14 @@ export default function useLawWorkspace() {
         if (controller.signal.aborted) return;
         setDatasets(data);
         setHistory(rows);
+        setDatasetId((currentId) => {
+          if (currentId) return currentId;
+          return data.some(
+            (dataset) => dataset.datasetId === defaultLawDatasetId
+          )
+            ? defaultLawDatasetId
+            : '';
+        });
       })
       .catch((e) => {
         if (!controller.signal.aborted) reportError(e);
@@ -92,6 +101,11 @@ export default function useLawWorkspace() {
   const select = (id: string) => {
     if (sendingRef.current) return;
     setError('');
+    if (
+      !id &&
+      datasets.some((dataset) => dataset.datasetId === defaultLawDatasetId)
+    )
+      setDatasetId(defaultLawDatasetId);
     setParams(id ? { conversation: id } : {});
   };
 
@@ -126,7 +140,7 @@ export default function useLawWorkspace() {
         text,
         clientRequestId: crypto.randomUUID(),
         expectedRevision: c.revision,
-        datasetId: c.datasetId,
+        datasetId,
       };
       sessionStorage.setItem(pendingKey(targetId), JSON.stringify(request));
       await api.submit(targetId, request);

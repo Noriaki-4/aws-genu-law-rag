@@ -8,8 +8,9 @@
 - 法令検索専用画面 `/legal-rag` → REST → `local-rag-poc-law`
 - GenU Agent Builder → MCP → `local-rag-poc-law`
 
-現在実装済みなのはloopback上のローカル接続である。AWS配置、Cognito認証、会話所有権、
-マルチユーザー分離が完成したことを意味しない。詳細は[移行手順](docs/ja/LAW_V2.md)を参照。
+AWSでは東京リージョンのHTTPS APIへ接続し、GenUのCognito IDトークンを使う。
+API Gatewayと法令バックエンドの両方でトークンを検証し、会話所有権を利用者ごとに分離する。
+ローカル接続は従来どおりloopback限定・認証なしである。詳細は[接続手順](docs/ja/LAW_V2.md)を参照。
 
 ## 法令検索専用画面
 
@@ -19,7 +20,6 @@
 - 質問送信、処理状態の確認、確認質問への応答
 - 回答記述、引用原文、保存済み文書へのリンク
 - 住民系業務の質問集14問（レベル1〜5）
-- 保存済み要件とSQL準備状態
 - 文書名検索と登録済みの直接関係
 - 会話・調査実行の診断JSON
 - 応答紛失時の同一ID再送、二重送信防止、古い応答の破棄
@@ -36,6 +36,13 @@ npm run web:dev:law-v2
 
 `http://127.0.0.1:18505/legal-rag`を開く。Viteが同一オリジンの`/law-api`をloopback APIへ転送する。
 このREST接続はDEVビルドかつloopbackのブラウザーだけで有効になり、production buildでは有効にならない。
+
+## AWS接続
+
+CDKの`legalRagEndpoint`に東京リージョンのAPI Gateway HTTPS URLを設定すると、
+production buildで`/legal-rag`を有効にする。許可する接続先は
+`*.execute-api.ap-northeast-1.amazonaws.com`だけで、各リクエストにGenUのCognito IDトークンを付与する。
+法令バックエンドのCognito User Pool、App Client、CORS originも同じGenU環境へ合わせる。
 
 ## version管理
 

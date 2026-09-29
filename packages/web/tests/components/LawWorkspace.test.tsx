@@ -22,9 +22,15 @@ const mocks = vi.hoisted(() => ({
   turns: vi.fn(),
   toolResult: vi.fn(),
   analysis: vi.fn(),
+  usage: vi.fn(),
   dataset: vi.fn(),
   runAnalysis: vi.fn(),
+  rawCall: vi.fn(),
+  analysisExport: vi.fn(),
+  documentContent: vi.fn(),
 }));
+const naraDatasetId =
+  'ds-525fc301de3e54ecb868fdd41a329bbfc97135b1309202e1856b6ba1df717cd0';
 vi.mock('../../src/hooks/useLawApi', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../../src/hooks/useLawApi')>()),
   default: () => mocks,
@@ -74,7 +80,19 @@ const turns = [
     runIds: ['r1'],
     reply: 'answer',
     answer: {
-      claims: [{ text: 'Structured conclusion', evidenceIds: ['e1'] }],
+      claims: [
+        {
+          section: 'conclusion',
+          text: 'Structured conclusion',
+          evidenceIds: [],
+        },
+        {
+          section: 'reasoning',
+          heading: 'Reason one',
+          text: 'Structured reason',
+          evidenceIds: ['e1'],
+        },
+      ],
       unknowns: ['A clarification'],
       unresolvedIssues: [],
     },
@@ -118,7 +136,34 @@ beforeEach(() => {
     messages: [],
   });
   mocks.submit.mockResolvedValue({ turnId: 't2', status: 'queued' });
-  mocks.analysis.mockResolvedValue({ marker: 'analysis-result' });
+  mocks.analysis.mockResolvedValue({
+    turns: [
+      {
+        turnId: 't1',
+        status: 'completed',
+        runIds: ['r1'],
+        request: { text: 'Test question' },
+        decision: { action: 'investigate', reason: 'Need sources' },
+      },
+    ],
+  });
+  mocks.usage.mockResolvedValue({
+    calls: [{ callId: 'call-1' }],
+    knownUsd: 0.001,
+    unknownCalls: 0,
+  });
+  mocks.runAnalysis.mockResolvedValue({
+    run: { runId: 'r1', status: 'completed' },
+    artifacts: { retrieval_steps: [], evidence: [] },
+    usage: {
+      totalInput: { knownSum: 100 },
+      output: { knownSum: 20 },
+    },
+    cost: { knownUsd: 0.001, unknownCalls: 0 },
+    calls: [],
+  });
+  mocks.rawCall.mockResolvedValue({});
+  mocks.analysisExport.mockResolvedValue(new Blob(['export']));
   mocks.dataset.mockResolvedValue({
     documents: [{ documentId: 'doc', versionId: 'v1', title: 'Test document' }],
     relations: [],
@@ -160,14 +205,22 @@ describe('law workspace', () => {
     renderPage();
     await screen.findByText('Structured conclusion');
     fireEvent.click(screen.getByText('legal_rag.resident_library.title'));
-    fireEvent.change(
-      screen.getByLabelText('legal_rag.resident_library.level'),
-      { target: { value: '5' } }
-    );
+    expect(screen.queryByRole('dialog')).toBeNull();
     expect(
-      screen.getAllByText('legal_rag.resident_library.hypothetical')
+      screen.getAllByText('legal_rag.resident_library.level_1_title')
     ).toHaveLength(2);
-    fireEvent.click(screen.getAllByText('legal_rag.resident_library.apply')[0]);
+    expect(
+      screen.getAllByText('legal_rag.resident_library.level_5_title')
+    ).toHaveLength(2);
+    expect(
+      screen.queryByText('legal_rag.resident_library.hypothetical')
+    ).toBeNull();
+    const levelFiveQuestion = screen.getByText(residentQuestions[12].title);
+    fireEvent.click(
+      within(levelFiveQuestion.closest('article')!).getByText(
+        'legal_rag.resident_library.apply'
+      )
+    );
     await screen.findByText('legal_rag.workspace.start');
     expect(
       (
@@ -236,9 +289,33 @@ describe('law workspace', () => {
       target: { value: 'Question' },
     });
     expect(
-      screen.getByText('legal_rag.workspace.send').hasAttribute('disabled')
+      screen
+        .getByRole('button', { name: /legal_rag\.workspace\.send/ })
+        .hasAttribute('disabled')
     ).toBe(true);
     expect(mocks.create).not.toHaveBeenCalled();
+  });
+
+  test('selects the current Nara dataset for a new conversation', async () => {
+    mocks.datasets.mockResolvedValue([
+      {
+        datasetId: naraDatasetId,
+        municipalities: ['Nara'],
+        documentCount: 361,
+        relationCount: 0,
+        titles: [],
+      },
+    ]);
+    renderPage('/legal-rag');
+    await waitFor(() =>
+      expect(
+        (
+          screen.getByLabelText(
+            'legal_rag.workspace.dataset'
+          ) as HTMLSelectElement
+        ).value
+      ).toBe(naraDatasetId)
+    );
   });
 
   test('restores a saved answer and sources without loading diagnostics or calling the model', async () => {
@@ -249,15 +326,21 @@ describe('law workspace', () => {
     fireEvent.click(screen.getByText('legal_rag.workspace.evidence_count'));
     expect(screen.getByText('Original source')).toBeTruthy();
     expect(screen.queryByText('legal_rag.workspace.source')).toBeNull();
-    expect(
-      screen
-        .getByText('legal_rag.workspace.saved_document')
-        .getAttribute('href')
-    ).toBe('/law-api/datasets/d1/documents/doc/content?version=v1');
-    fireEvent.click(screen.getByText('legal_rag.workspace.requirements'));
-    await waitFor(() =>
-      expect(mocks.toolResult).toHaveBeenCalledWith('c1', 't1')
+    mocks.documentContent.mockResolvedValue(new Blob(['source']));
+    const createObjectURL = vi.fn(() => 'blob:source');
+    vi.stubGlobal(
+      'URL',
+      class extends URL {
+        static createObjectURL = createObjectURL;
+        static revokeObjectURL = vi.fn();
+      }
     );
+    fireEvent.click(screen.getByText('legal_rag.workspace.saved_document'));
+    await waitFor(() =>
+      expect(mocks.documentContent).toHaveBeenCalledWith('d1', 'doc', 'v1')
+    );
+    expect(screen.queryByText('legal_rag.workspace.requirements')).toBeNull();
+    expect(mocks.toolResult).not.toHaveBeenCalled();
     expect(mocks.submit).not.toHaveBeenCalled();
   });
 
@@ -265,9 +348,19 @@ describe('law workspace', () => {
     renderPage();
     await screen.findByText('Structured conclusion');
     fireEvent.click(screen.getByText('legal_rag.workspace.analysis'));
-    await screen.findByText(/analysis-result/);
+    await screen.findByText('legal_rag.analysis.title');
+    await screen.findByText('legal_rag.analysis.timeline_item');
+    expect(mocks.analysis).toHaveBeenCalledWith('c1', expect.any(AbortSignal));
+    expect(mocks.usage).toHaveBeenCalledWith('c1', expect.any(AbortSignal));
     fireEvent.click(screen.getByText('legal_rag.workspace.documents'));
     await waitFor(() => expect(mocks.dataset).toHaveBeenCalled());
+    expect(
+      screen.getByLabelText('legal_rag.workspace.graph_focus')
+    ).toBeTruthy();
+    expect(
+      screen.getByLabelText('legal_rag.workspace.graph_depth')
+    ).toBeTruthy();
+    expect(screen.getByText('legal_rag.workspace.graph_summary')).toBeTruthy();
     expect(
       await screen.findByText('legal_rag.workspace.no_relations')
     ).toBeTruthy();
@@ -280,17 +373,57 @@ describe('law workspace', () => {
     fireEvent.change(screen.getByLabelText('legal_rag.workspace.question'), {
       target: { value: 'Follow up' },
     });
-    fireEvent.click(screen.getByText('legal_rag.workspace.send'));
+    fireEvent.click(
+      screen.getByRole('button', { name: /legal_rag\.workspace\.send/ })
+    );
     await screen.findByText('legal_rag.workspace.connection_error');
     await waitFor(() =>
       expect(
-        screen.getByText('legal_rag.workspace.send').hasAttribute('disabled')
+        screen
+          .getByRole('button', { name: /legal_rag\.workspace\.send/ })
+          .hasAttribute('disabled')
       ).toBe(false)
     );
-    fireEvent.click(screen.getByText('legal_rag.workspace.send'));
+    fireEvent.click(
+      screen.getByRole('button', { name: /legal_rag\.workspace\.send/ })
+    );
     await waitFor(() => expect(mocks.submit).toHaveBeenCalledTimes(2));
     expect(mocks.submit.mock.calls[0]).toEqual(mocks.submit.mock.calls[1]);
     expect(mocks.create).not.toHaveBeenCalled();
+  });
+
+  test('applies a dataset change to the next message in an existing conversation', async () => {
+    mocks.datasets.mockResolvedValue([
+      {
+        datasetId: 'd1',
+        municipalities: ['City one'],
+        documentCount: 1,
+        relationCount: 0,
+        titles: [],
+      },
+      {
+        datasetId: 'd2',
+        municipalities: ['City two'],
+        documentCount: 2,
+        relationCount: 0,
+        titles: [],
+      },
+    ]);
+    renderPage();
+    await screen.findByText('Structured conclusion');
+    fireEvent.change(screen.getByLabelText('legal_rag.workspace.dataset'), {
+      target: { value: 'd2' },
+    });
+    fireEvent.change(screen.getByLabelText('legal_rag.workspace.question'), {
+      target: { value: 'Use the new dataset' },
+    });
+    fireEvent.click(
+      screen.getByRole('button', { name: /legal_rag\.workspace\.send/ })
+    );
+    await waitFor(() => expect(mocks.submit).toHaveBeenCalledTimes(1));
+    expect(mocks.submit.mock.calls[0][1]).toEqual(
+      expect.objectContaining({ datasetId: 'd2' })
+    );
   });
 
   test('ignores a stale conversation response after the user starts a new chat', async () => {
@@ -302,7 +435,11 @@ describe('law workspace', () => {
     );
     renderPage();
     await screen.findByText('Saved chat');
-    fireEvent.click(screen.getByText('legal_rag.workspace.new_conversation'));
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /legal_rag\.workspace\.new_conversation/,
+      })
+    );
     await act(async () => resolve(conversation));
     expect(screen.queryByText('Structured conclusion')).toBeNull();
     expect(screen.getByText('legal_rag.workspace.start')).toBeTruthy();
@@ -317,8 +454,12 @@ describe('law workspace', () => {
     fireEvent.change(screen.getByLabelText('legal_rag.workspace.question'), {
       target: { value: 'New question' },
     });
-    fireEvent.click(screen.getByText('legal_rag.workspace.send'));
-    fireEvent.click(screen.getByText('legal_rag.workspace.send'));
+    fireEvent.click(
+      screen.getByRole('button', { name: /legal_rag\.workspace\.send/ })
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: /legal_rag\.workspace\.send/ })
+    );
     await waitFor(() => expect(mocks.submit).toHaveBeenCalledTimes(1));
     expect(mocks.create).toHaveBeenCalledTimes(1);
   });
