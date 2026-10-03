@@ -4,7 +4,7 @@ export const isLocalLawRestEnabled = (
   hostname: string
 ) =>
   development &&
-  mode === 'local-rest' &&
+  mode === 'local-runtime' &&
   ['localhost', '127.0.0.1', '[::1]'].includes(hostname);
 
 export const normalizeRemoteLawEndpoint = (value: string | undefined) => {
@@ -13,11 +13,15 @@ export const normalizeRemoteLawEndpoint = (value: string | undefined) => {
     const endpoint = new URL(value);
     if (
       endpoint.protocol !== 'https:' ||
+      endpoint.port ||
       endpoint.username ||
       endpoint.password ||
-      endpoint.search ||
       endpoint.hash ||
-      !endpoint.hostname.endsWith('.execute-api.ap-northeast-1.amazonaws.com')
+      (endpoint.search && endpoint.search !== '?qualifier=DEFAULT') ||
+      endpoint.hostname !== 'bedrock-agentcore.ap-northeast-1.amazonaws.com' ||
+      !/^\/runtimes\/arn%3Aaws%3Abedrock-agentcore%3Aap-northeast-1%3A[0-9]{12}%3Aruntime%2F[A-Za-z0-9_-]+\/invocations$/i.test(
+        endpoint.pathname
+      )
     )
       return undefined;
     return endpoint.href.replace(/\/$/, '');
@@ -66,7 +70,7 @@ const remoteEndpoint = normalizeRemoteLawEndpoint(
 );
 
 export const lawRestEnabled = localEnabled || remoteEndpoint !== undefined;
-export const lawRestBase = remoteEndpoint ?? '/law-api';
+export const lawRestBase = remoteEndpoint ?? '/law-api/invocations';
 export const lawRestUsesCognito = remoteEndpoint !== undefined;
 const configuredLawDatasetIds = parseLawDatasetIds(
   import.meta.env.VITE_APP_LEGAL_RAG_DATASET_IDS

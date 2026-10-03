@@ -10,7 +10,7 @@ import webfontDownload from 'vite-plugin-webfont-dl';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server:
-    process.env.VITE_APP_LEGAL_RAG_TRANSPORT === 'local-rest'
+    process.env.VITE_APP_LEGAL_RAG_TRANSPORT === 'local-runtime'
       ? {
           host: '127.0.0.1',
           strictPort: true,

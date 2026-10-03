@@ -35,41 +35,57 @@ export function createLawApi(
 ) {
   const baseUrl = options.baseUrl ?? lawRestBase;
   const visibleDatasetIds = [...new Set(options.datasetIds ?? [])];
-  const send = async (
-    path: string,
-    body?: unknown,
+  const clientSession = 'law-client-' + crypto.randomUUID();
+  type Fields = {
+    conversationId?: string;
+    requestId?: string;
+    expectedRevision?: number;
+    payload?: Record<string, unknown>;
+  };
+  const request = async <T>(
+    operation: string,
+    fields: Fields = {},
     signal?: AbortSignal
-  ): Promise<Response> => {
-    if (!enabled) throw new Error('Law REST transport is disabled');
+  ): Promise<T> => {
+    if (!enabled) throw new Error('Law Runtime transport is disabled');
     const token = await options.getIdToken?.();
     if (options.getIdToken && !token)
-      throw new Error('Law REST authentication is unavailable');
-    const headers: Record<string, string> = {};
-    if (body !== undefined) headers['Content-Type'] = 'application/json';
-    if (token) headers.Authorization = `Bearer ${token}`;
-    const response = await transport(baseUrl + path, {
-      method: body === undefined ? 'GET' : 'POST',
-      headers: Object.keys(headers).length === 0 ? undefined : headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      throw new Error('Law Runtime authentication is unavailable');
+    const response = await transport(baseUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Amzn-Bedrock-AgentCore-Runtime-Session-Id': fields.conversationId
+          ? `law-conversation-${fields.conversationId}`
+          : clientSession,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ operation, ...fields }),
       signal,
       cache: 'no-store',
       credentials: 'omit',
       redirect: 'error',
     });
     if (!response.ok) throw new LawApiError(response.status);
-    return response;
+    const body = await response.json();
+    return body.result as T;
   };
-  const request = async <T>(
-    path: string,
-    body?: unknown,
-    signal?: AbortSignal
-  ): Promise<T> => (await send(path, body, signal)).json() as Promise<T>;
-  const id = encodeURIComponent;
+  type Content = { encoding: string; data: string; contentType: string };
+  const contentBlob = (content: Content) => {
+    if (content.encoding === 'base64') {
+      return new Blob(
+        [Uint8Array.from(atob(content.data), (c) => c.charCodeAt(0))],
+        { type: content.contentType }
+      );
+    }
+    // Display saved XML as text rather than executing its markup.
+    return new Blob([content.data], { type: 'text/plain;charset=utf-8' });
+  };
   return {
     datasets: async (signal?: AbortSignal) => {
       const datasets = await request<LawDatasetSummary[]>(
-        '/datasets',
-        undefined,
+        'listDatasets',
+        {},
         signal
       );
       return visibleDatasetIds.length === 0
@@ -82,67 +98,69 @@ export function createLawApi(
           });
     },
     dataset: (datasetId: string, signal?: AbortSignal) =>
-      request<LawDataset>(`/datasets/${id(datasetId)}`, undefined, signal),
+      request<LawDataset>('getDataset', { payload: { datasetId } }, signal),
     history: (signal?: AbortSignal) =>
       request<LawConversationSummary[]>(
-        '/conversations?limit=100',
-        undefined,
+        'listConversations',
+        { payload: { limit: 100 } },
         signal
       ),
-    conversation: (cid: string, signal?: AbortSignal) =>
-      request<LawConversation>(`/conversations/${id(cid)}`, undefined, signal),
+    conversation: (conversationId: string, signal?: AbortSignal) =>
+      request<LawConversation>('getConversation', { conversationId }, signal),
     create: (datasetId: string) =>
-      request<LawConversation>('/conversations', {
-        datasetId,
-        toolOutput: false,
+      request<LawConversation>('createConversation', {
+        payload: { datasetId, toolOutput: false },
       }),
-    submit: (cid: string, body: LawSubmitTurn) =>
-      request<LawTurn>(`/conversations/${id(cid)}/turns`, body),
-    turns: (cid: string, signal?: AbortSignal) =>
-      request<LawTurn[]>(`/conversations/${id(cid)}/turns`, undefined, signal),
-    toolResult: (cid: string, tid: string, signal?: AbortSignal) =>
+    submit: (conversationId: string, body: LawSubmitTurn) => {
+      const { clientRequestId, expectedRevision, ...payload } = body;
+      return request<LawTurn>('submitTurn', {
+        conversationId,
+        requestId: clientRequestId,
+        expectedRevision,
+        payload,
+      });
+    },
+    turns: (conversationId: string, signal?: AbortSignal) =>
+      request<LawTurn[]>('listTurns', { conversationId }, signal),
+    toolResult: (
+      conversationId: string,
+      turnId: string,
+      signal?: AbortSignal
+    ) =>
       request<LawToolResult>(
-        `/conversations/${id(cid)}/turns/${id(tid)}/tool-result`,
-        undefined,
+        'getToolResult',
+        { conversationId, payload: { turnId } },
         signal
       ),
-    analysis: (cid: string, signal?: AbortSignal) =>
-      request<unknown>(`/conversations/${id(cid)}/analysis`, undefined, signal),
-    usage: (cid: string, signal?: AbortSignal) =>
-      request<unknown>(`/conversations/${id(cid)}/usage`, undefined, signal),
-    runAnalysis: (rid: string, signal?: AbortSignal) =>
-      request<unknown>(
-        `/investigations/${id(rid)}/analysis`,
-        undefined,
-        signal
-      ),
-    rawCall: (rid: string, callId: string, signal?: AbortSignal) =>
-      request<unknown>(
-        `/investigations/${id(rid)}/calls/${id(callId)}`,
-        undefined,
-        signal
-      ),
-    analysisExport: async (rid: string, signal?: AbortSignal) =>
-      (
-        await send(
-          `/investigations/${id(rid)}/analysis/export`,
-          undefined,
+    analysis: (conversationId: string, signal?: AbortSignal) =>
+      request<unknown>('getConversationAnalysis', { conversationId }, signal),
+    usage: (conversationId: string, signal?: AbortSignal) =>
+      request<unknown>('getConversationUsage', { conversationId }, signal),
+    runAnalysis: (runId: string, signal?: AbortSignal) =>
+      request<unknown>('getRunAnalysis', { payload: { runId } }, signal),
+    rawCall: (runId: string, callId: string, signal?: AbortSignal) =>
+      request<unknown>('getCall', { payload: { runId, callId } }, signal),
+    analysisExport: async (runId: string, signal?: AbortSignal) =>
+      contentBlob(
+        await request<Content>(
+          'exportRunAnalysis',
+          { payload: { runId } },
           signal
         )
-      ).blob(),
+      ),
     documentContent: async (
       datasetId: string,
       documentId: string,
       versionId: string,
       signal?: AbortSignal
     ) =>
-      (
-        await send(
-          `/datasets/${id(datasetId)}/documents/${id(documentId)}/content?version=${id(versionId)}`,
-          undefined,
+      contentBlob(
+        await request<Content>(
+          'getDocumentContent',
+          { payload: { datasetId, documentId, versionId } },
           signal
         )
-      ).blob(),
+      ),
   };
 }
 

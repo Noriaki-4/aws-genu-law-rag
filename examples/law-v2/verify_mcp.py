@@ -10,7 +10,7 @@ from mcp.client.stdio import stdio_client
 
 async def main():
     config = json.loads(Path(__file__).with_name("mcp.local.json").read_text())
-    server = config["mcpServers"]["law-v2"]
+    server = config["mcpServers"]["law-v3"]
     parameters = StdioServerParameters(command=server["command"], args=server["args"])
     async with asyncio.timeout(90):
         async with stdio_client(parameters) as (reader, writer):

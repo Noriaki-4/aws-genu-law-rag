@@ -21,13 +21,18 @@ const baseStackInputSchema = z.object({
       const endpoint = new URL(value);
       return (
         endpoint.protocol === 'https:' &&
+        !endpoint.port &&
         !endpoint.username &&
         !endpoint.password &&
-        !endpoint.search &&
+        (!endpoint.search || endpoint.search === '?qualifier=DEFAULT') &&
         !endpoint.hash &&
-        endpoint.hostname.endsWith('.execute-api.ap-northeast-1.amazonaws.com')
+        endpoint.hostname ===
+          'bedrock-agentcore.ap-northeast-1.amazonaws.com' &&
+        /^\/runtimes\/arn%3Aaws%3Abedrock-agentcore%3Aap-northeast-1%3A[0-9]{12}%3Aruntime%2F[A-Za-z0-9_-]+\/invocations$/i.test(
+          endpoint.pathname
+        )
       );
-    }, 'legalRagEndpoint must be an ap-northeast-1 API Gateway HTTPS URL')
+    }, 'legalRagEndpoint must be an ap-northeast-1 AgentCore Runtime invocation HTTPS URL')
     .nullish(),
   legalRagDatasetIds: z
     .array(z.string().regex(/^ds-[0-9a-f]{64}$/))

@@ -1,16 +1,16 @@
 # aws-genu-law-rag
 
 公式GenU `v5.5.0`を基盤とする法令検索フロントエンドである。法令検索・会話管理の正本は
-`local-rag-poc-law` v2.0.8とし、GenU側では検索、Graph、LLM処理を再実装しない。
+`local-rag-poc-law-v3` v3.0.0とし、GenU側では検索、Graph、LLM処理を再実装しない。
 
 ## 接続構成
 
-- 法令検索専用画面 `/legal-rag` → REST → `local-rag-poc-law`
-- GenU Agent Builder → MCP → `local-rag-poc-law`
+- 法令検索専用画面 `/legal-rag` → AgentCore operation API → `local-rag-poc-law-v3`
+- GenU Agent Builder → MCP → `local-rag-poc-law-v3`
 
 AWSでは東京リージョンのHTTPS APIへ接続し、GenUのCognito IDトークンを使う。
-API Gatewayと法令バックエンドの両方でトークンを検証し、会話所有権を利用者ごとに分離する。
-ローカル接続は従来どおりloopback限定・認証なしである。詳細は[接続手順](docs/ja/LAW_V2.md)を参照。
+AgentCore Runtimeと法令バックエンドの両方でトークンを検証し、会話所有権を利用者ごとに分離する。
+ローカル接続は従来どおりloopback限定・認証なしである。詳細は[接続手順](docs/ja/LAW_V3.md)を参照。
 
 ## 法令検索専用画面
 
@@ -31,17 +31,17 @@ API Gatewayと法令バックエンドの両方でトークンを検証し、会
 ```bash
 nvm use
 npm ci
-npm run web:dev:law-v2
+npm run web:dev:law-v3
 ```
 
 `http://127.0.0.1:18505/legal-rag`を開く。Viteが同一オリジンの`/law-api`をloopback APIへ転送する。
-このREST接続はDEVビルドかつloopbackのブラウザーだけで有効になり、production buildでは有効にならない。
+このローカル接続はDEVビルドかつloopbackのブラウザーだけで有効になり、production buildでは有効にならない。
 
 ## AWS接続
 
-CDKの`legalRagEndpoint`に東京リージョンのAPI Gateway HTTPS URLを設定すると、
+CDKの`legalRagEndpoint`に東京リージョンのAgentCore Runtime invocation HTTPS URLを設定すると、
 production buildで`/legal-rag`を有効にする。許可する接続先は
-`*.execute-api.ap-northeast-1.amazonaws.com`だけで、各リクエストにGenUのCognito IDトークンを付与する。
+`bedrock-agentcore.ap-northeast-1.amazonaws.com`だけで、各リクエストにGenUのCognito IDトークンを付与する。
 法令バックエンドのCognito User Pool、App Client、CORS originも同じGenU環境へ合わせる。
 
 ## version管理

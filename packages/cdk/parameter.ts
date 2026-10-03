@@ -23,8 +23,8 @@ const envs: Record<string, Partial<StackInput>> = {
   // },
   dev: {
     // Parameters for development environment
-    legalRagEndpoint:
-      'https://h1aeon1axc.execute-api.ap-northeast-1.amazonaws.com',
+    // Set the v3 HTTP Runtime invocation URL after backend deployment.
+    legalRagEndpoint: null,
     legalRagDatasetIds: [
       'ds-525fc301de3e54ecb868fdd41a329bbfc97135b1309202e1856b6ba1df717cd0',
       'ds-a0ef00eb3843023d6121613a647f5907272141f6381d8bcbbdaea3a178a3593a',

@@ -316,12 +316,12 @@ describe('GenerativeAiUseCases', () => {
     ).not.toThrow();
   });
 
-  test('legal RAG endpoint is limited to API Gateway in Tokyo', () => {
+  test('legal RAG endpoint is limited to AgentCore Runtime in Tokyo', () => {
     expect(() =>
       stackInputSchema.parse({
         ...stackInput,
         legalRagEndpoint:
-          'https://api-id.execute-api.ap-northeast-1.amazonaws.com',
+          'https://bedrock-agentcore.ap-northeast-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aap-northeast-1%3A123456789012%3Aruntime%2Flaw_test-abc/invocations?qualifier=DEFAULT',
       })
     ).not.toThrow();
     expect(() =>

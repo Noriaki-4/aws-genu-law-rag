@@ -2,10 +2,10 @@
 
 ## Project boundary
 
-- このリポジトリは法令検索のGenUフロントエンドである。接続先の正本は`local-rag-poc-law` v2.0.8とする。
+- このリポジトリは法令検索のGenUフロントエンドである。接続先の正本は`local-rag-poc-law-v3` v3.0.0とする。
 - upstreamの基準は`UPSTREAM.md`に記録した公式GenU `v5.5.0`とする。
 - `aws-genu-sqlbot`からsource、設定、commitを移植しない。参考情報と実装の由来を混在させない。
-- backendの検索・Graph・LLM処理を再実装しない。専用画面からREST、Agent BuilderからMCPを使う。段階と安全境界は`docs/ja/LAW_V2.md`を参照。
+- backendの検索・Graph・LLM処理を再実装しない。専用画面からAgentCoreのoperation API、Agent BuilderからMCPを使う。段階と安全境界は`docs/ja/LAW_V3.md`を参照。
 
 ## Changes
 

@@ -1,3 +1,8 @@
+## v3移行
+
+専用画面はAgentCore operation APIへ変更済み。現行手順は[LAW_V3.md](docs/ja/LAW_V3.md)。
+以下はv2時点の履歴であり、FastAPI配置はv3では採用しない。AWS受入とMCPの利用者認証伝達は未完了。
+
 # 課題管理
 
 GenUは公式v5.5.0を維持し、法令検索・会話管理の正本は`local-rag-poc-law` v2.0.8とする。

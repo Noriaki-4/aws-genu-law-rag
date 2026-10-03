@@ -34,10 +34,6 @@ function Evidence({
   const { t } = useTranslation();
   const [documentError, setDocumentError] = useState(false);
   const [documentLoading, setDocumentLoading] = useState(false);
-  const source =
-    passage.sourceUrl && /^https?:\/\//i.test(passage.sourceUrl)
-      ? passage.sourceUrl
-      : undefined;
   const openStoredDocument = async () => {
     setDocumentLoading(true);
     setDocumentError(false);
@@ -76,11 +72,6 @@ function Evidence({
           onClick={() => void openStoredDocument()}>
           {t('legal_rag.workspace.saved_document')}
         </button>
-        {source && (
-          <a target="_blank" rel="noreferrer" href={source}>
-            {t('legal_rag.workspace.source')}
-          </a>
-        )}
       </div>
       {documentError && (
         <p role="alert">{t('legal_rag.workspace.connection_error')}</p>
